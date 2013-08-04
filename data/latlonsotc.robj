@@ -1,0 +1,18 @@
+structure(list(lon = c(-98.4864829, -81.5190053, -88.8853078, 
+-105.2705456, -82.5748194, -80.8431267, -81.0348144, -84.9877094, 
+-83.0457538, -92.1004852, -85.1393513, -87.3464271, -97.0328547, 
+-84.5037164, -118.1956168, -83.6324022, -80.2264393, -83.2320991, 
+-78.8866943, -80.0364297, -75.163789, -121.8949555, -93.0899578, 
+-77.8600012, -84.2807329, -97.3361111), lat = c(45.4646985, 41.0814447, 
+30.3960318, 40.0149856, 27.4989278, 35.2270869, 34.0007104, 32.4609764, 
+42.331427, 46.7866719, 41.079273, 41.5933696, 47.9252568, 38.0405837, 
+33.768321, 32.8406946, 25.7889689, 33.0801429, 33.6890603, 26.7056206, 
+39.952335, 37.3393857, 44.9537029, 40.7933949, 30.4382559, 37.6888889
+), citystate = c("Aberdeen, SD", "Akron, OH", "Biloxi, MS", "Boulder, CO", 
+"Bradenton, FL", "Charlotte, NC", "Columbia, SC", "Columbus, GA", 
+"Detroit, MI", "Duluth, MN", "Fort Wayne, IN", "Gary, IN", "Grand Forks, ND", 
+"Lexington, KY", "Long Beach, CA", "Macon, GA", "Miami, FL", 
+"Milledgeville, GA", "Myrtle Beach, SC", "Palm Beach, FL", "Philadelphia, PA", 
+"San Jose, CA", "St. Paul, MN", "State College, PA", "Tallahassee, FL", 
+"Wichita, KS")), .Names = c("lon", "lat", "citystate"), row.names = c(NA, 
+-26L), class = "data.frame")
