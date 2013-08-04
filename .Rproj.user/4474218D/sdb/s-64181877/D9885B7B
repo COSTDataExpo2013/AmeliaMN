@@ -1,0 +1,21 @@
+{
+    "contents" : "",
+    "created" : 1375127634303.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "D9885B7B",
+    "lastKnownWriteTime" : 6066188611752034305,
+    "path" : null,
+    "properties" : {
+        "caption" : "sotc08",
+        "contentUrl" : "content?title=sotc08&file=52a29cb6d3d742d8a65dcf9d1867be50.htm",
+        "displayedObservations" : 1000,
+        "displayedVariables" : 100,
+        "totalObservations" : 13822,
+        "variables" : 156
+    },
+    "source_on_save" : false,
+    "type" : "r_dataframe"
+}

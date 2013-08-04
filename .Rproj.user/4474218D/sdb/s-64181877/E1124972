@@ -1,0 +1,21 @@
+{
+    "contents" : "",
+    "created" : 1375117804457.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "E1124972",
+    "lastKnownWriteTime" : 140524520472576,
+    "path" : null,
+    "properties" : {
+        "caption" : "dfcities",
+        "contentUrl" : "content?title=dfcities&file=bc4a7c102e5d430d8396e82e8482a7d3.htm",
+        "displayedObservations" : "520",
+        "displayedVariables" : 4,
+        "totalObservations" : "520",
+        "variables" : "4"
+    },
+    "source_on_save" : false,
+    "type" : "r_dataframe"
+}

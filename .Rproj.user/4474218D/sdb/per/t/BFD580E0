@@ -1,0 +1,15 @@
+{
+    "contents" : "shinyUI(bootstrapPage(\n  selectInput(inputId = \"citystate\",\n              label = \"Community:\",\n              choices =  levels(csat$citystate),\n              selected = levels(csat$citystate)[1]),\n  plotOutput(outputId = \"main_plot\", width = \"500px\")\n))",
+    "created" : 1375483556385.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "184958739",
+    "id" : "BFD580E0",
+    "lastKnownWriteTime" : 1375485445,
+    "path" : "~/Dropbox/RStudioStuff/RStudioStuff/WorkingDocuments/SoulOfCommunity/csatShiny/ui.R",
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

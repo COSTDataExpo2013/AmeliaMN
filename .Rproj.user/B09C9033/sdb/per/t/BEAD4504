@@ -1,0 +1,21 @@
+{
+    "contents" : "",
+    "created" : 1374704921694.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "BEAD4504",
+    "lastKnownWriteTime" : 140411070840832,
+    "path" : null,
+    "properties" : {
+        "caption" : "sotc08",
+        "contentUrl" : "content?title=sotc08&file=825d8c11254b4201b02b18a6ae8a1897.htm",
+        "displayedObservations" : 1000,
+        "displayedVariables" : 100,
+        "totalObservations" : 13822,
+        "variables" : 156
+    },
+    "source_on_save" : false,
+    "type" : "r_dataframe"
+}

@@ -1,0 +1,21 @@
+{
+    "contents" : "",
+    "created" : 1375483803113.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "A3F9BE55",
+    "lastKnownWriteTime" : 140539919794176,
+    "path" : null,
+    "properties" : {
+        "caption" : "csat",
+        "contentUrl" : "content?title=csat&file=c13a30a1771342fd85fa633a4e254057.htm",
+        "displayedObservations" : 130,
+        "displayedVariables" : 3,
+        "totalObservations" : 130,
+        "variables" : 3
+    },
+    "source_on_save" : false,
+    "type" : "r_dataframe"
+}

@@ -1,0 +1,21 @@
+{
+    "contents" : "",
+    "created" : 1365702686837.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "CA0AE446",
+    "lastKnownWriteTime" : 2334675641770338675,
+    "path" : null,
+    "properties" : {
+        "caption" : "sotc",
+        "contentUrl" : "content?title=sotc&file=3b184af8869842fb99cee9160599029c.htm",
+        "displayedObservations" : "1000",
+        "displayedVariables" : 100,
+        "totalObservations" : "20271",
+        "variables" : "181"
+    },
+    "source_on_save" : false,
+    "type" : "r_dataframe"
+}
