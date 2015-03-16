@@ -1,0 +1,324 @@
+PackratFormat: 1.4
+PackratVersion: 0.4.1.1
+RVersion: 3.1.2
+Repos: CRAN=http://cran.rstudio.com
+
+Package: assertthat
+Source: CRAN
+Version: 0.1
+Hash: 4b419cfdc33a3019a7f3c6f0cdea6c38
+
+Package: betareg
+Source: CRAN
+Version: 3.0-5
+Hash: a49019322ed3db3d226b857e28b02811
+Requires: flexmix, Formula, lmtest, modeltools, sandwich
+
+Package: BH
+Source: CRAN
+Version: 1.55.0-3
+Hash: 1c7274ffc895d2c8f23ae98d83a912ed
+
+Package: car
+Source: CRAN
+Version: 2.0-25
+Hash: 913a72e0f36d7f21b8ed32e4fe3933bf
+Requires: MASS, pbkrtest, quantreg
+
+Package: colorspace
+Source: CRAN
+Version: 1.2-4
+Hash: b775bd08a10f968fef582304b7c3ab9c
+
+Package: corrplot
+Source: CRAN
+Version: 0.73
+Hash: c844da5abc88620ce8c79d035ca8bf22
+
+Package: DBI
+Source: CRAN
+Version: 0.3.1
+Hash: 3a9e85b26ec3ab570266bccb3f9de055
+
+Package: dichromat
+Source: CRAN
+Version: 2.0-0
+Hash: 42be2136555fa4b6167605df56d8cd7c
+
+Package: digest
+Source: CRAN
+Version: 0.6.4
+Hash: e4bf0e79b15a352510aff0de905d31e2
+
+Package: dplyr
+Source: CRAN
+Version: 0.4.1
+Hash: f51467a80c0032a7e043e7c8473cab05
+Requires: assertthat, BH, DBI, lazyeval, magrittr, R6, Rcpp
+
+Package: evaluate
+Source: CRAN
+Version: 0.5.5
+Hash: 20881970e590ee68de97a468694db7b0
+Requires: stringr
+
+Package: flexmix
+Source: CRAN
+Version: 2.3-13
+Hash: cd988150c00a7f4c77154258ec342ffd
+Requires: modeltools
+
+Package: formatR
+Source: CRAN
+Version: 1.0
+Hash: a90c211d7df7e61a72b8ab6c99c2e848
+
+Package: Formula
+Source: CRAN
+Version: 1.2-0
+Hash: e6a390800e01396cd801abfd6c2c61ff
+
+Package: gdata
+Source: CRAN
+Version: 2.13.3
+Hash: fa67facdc23542b4056b3a50b5a0fb3c
+Requires: gtools
+
+Package: ggmap
+Source: CRAN
+Version: 2.3
+Hash: de98e41d089a704b5c03da03a806f2fb
+Requires: ggplot2, mapproj, plyr, png, proto, reshape2, RgoogleMaps,
+    rjson, scales
+
+Package: ggplot2
+Source: CRAN
+Version: 1.0.0
+Hash: c8bff66238347472f08b6a35608539ff
+Requires: digest, gtable, MASS, plyr, proto, reshape2, scales
+
+Package: gtable
+Source: CRAN
+Version: 0.1.2
+Hash: 0cf4a2b54c02b35dec7e74a8ebed12a0
+
+Package: gtools
+Source: CRAN
+Version: 3.4.1
+Hash: e4c2510a4ba86b5826f05d9f3639cb13
+
+Package: highr
+Source: CRAN
+Version: 0.4
+Hash: 8c77cca8556e1501621b4a5ccb7999bd
+
+Package: knitr
+Source: CRAN
+Version: 1.9
+Hash: 41c29594ced4d02b3b90b4c375680cd3
+Requires: digest, evaluate, formatR, highr, markdown, stringr
+
+Package: labeling
+Source: CRAN
+Version: 0.2
+Hash: 25f63495dfb737e67bd75fc1eb58ff2c
+
+Package: lazyeval
+Source: CRAN
+Version: 0.1.10
+Hash: 7f88a453d0b52e36ea46d9d33c6dcf90
+
+Package: leaps
+Source: CRAN
+Version: 2.9
+Hash: 867a1da6e0b0c2c6c6ce5eeb7bc4ca94
+
+Package: lme4
+Source: CRAN
+Version: 1.1-7
+Hash: a297fa8cc124ea2c8cff0223e9d88b19
+Requires: MASS, minqa, nloptr, Rcpp, RcppEigen
+
+Package: lmtest
+Source: CRAN
+Version: 0.9-33
+Hash: 72b903afbc3a3a5cfe40ad13cedcb8d7
+Requires: zoo
+
+Package: magrittr
+Source: CRAN
+Version: 1.0.1
+Hash: 576e5bf21e3801499cebc27af6ad1627
+
+Package: mapproj
+Source: CRAN
+Version: 1.2-2
+Hash: 26b74cac98f12af52703765791824ea2
+Requires: maps
+
+Package: maps
+Source: CRAN
+Version: 2.3-7
+Hash: 4c87e5e328a6125cbe661dff2189c864
+
+Package: markdown
+Source: CRAN
+Version: 0.7.4
+Hash: 01d7f71ed6e3d9b1c17ba51cff91be72
+Requires: mime
+
+Package: MASS
+Source: CRAN
+Version: 7.3-35
+Hash: 2a7641e407ce2a484d5a587a4e30a9aa
+
+Package: mime
+Source: CRAN
+Version: 0.2
+Hash: 9179db921fcb2e5be44e217042ed06bc
+
+Package: minqa
+Source: CRAN
+Version: 1.2.4
+Hash: c296d9310e771765d613acb3d704633c
+Requires: Rcpp
+
+Package: modeltools
+Source: CRAN
+Version: 0.2-21
+Hash: cf8ddb5ff06dedec20776365da8e288a
+
+Package: munsell
+Source: CRAN
+Version: 0.4.2
+Hash: fa8af6d040041439b249351e9d16ae9a
+Requires: colorspace
+
+Package: nloptr
+Source: CRAN
+Version: 1.0.4
+Hash: 2197af13ece296fdf1dd8f8a4e5a40e1
+
+Package: packrat
+Source: CRAN
+Version: 0.4.1-1
+Hash: 5716097644904b9c1b4be2692de16005
+
+Package: pbkrtest
+Source: CRAN
+Version: 0.4-2
+Hash: d28676d1aaa5a988d968cdcb42661177
+Requires: lme4, MASS
+
+Package: plyr
+Source: CRAN
+Version: 1.8.1
+Hash: be21bad411e628f810a92212e17b5be7
+Requires: Rcpp
+
+Package: png
+Source: CRAN
+Version: 0.1-7
+Hash: 7559dcd0a9f188351986d0494ec1516d
+
+Package: proto
+Source: CRAN
+Version: 0.3-10
+Hash: 668a9e87cedbdc5f56c396edf1bd2648
+
+Package: quantreg
+Source: CRAN
+Version: 5.11
+Hash: bac5ce40d7995763543a826ca9f39534
+Requires: SparseM
+
+Package: R6
+Source: CRAN
+Version: 2.0
+Hash: a7fd0cf10401cde9177f1a685f72d15a
+
+Package: RColorBrewer
+Source: CRAN
+Version: 1.0-5
+Hash: 6a849b729bec970204ca88b96906adbc
+
+Package: Rcpp
+Source: CRAN
+Version: 0.11.2
+Hash: ef2b1a5e45d1461bd720e4ebbe48e601
+
+Package: RcppEigen
+Source: CRAN
+Version: 0.3.2.4.0
+Hash: d981083fc9d94651367980e4ebd2d241
+Requires: Rcpp
+
+Package: reshape2
+Source: CRAN
+Version: 1.4
+Hash: b210925e978fd52ad5eb0822a353e7ce
+Requires: plyr, Rcpp, stringr
+
+Package: RgoogleMaps
+Source: CRAN
+Version: 1.2.0.6
+Hash: 94d5dca13d4b4b6b7e747f1ac735f77b
+Requires: png, RJSONIO
+
+Package: rjson
+Source: CRAN
+Version: 0.2.14
+Hash: 6dfb12a8996f481bf8000d885b76db2e
+
+Package: RJSONIO
+Source: CRAN
+Version: 1.3-0
+Hash: 8b1341dfd547c90ed4b3365d5aa46a7b
+
+Package: sandwich
+Source: CRAN
+Version: 2.3-2
+Hash: be27c334f9f849cb3eff949c75338715
+Requires: zoo
+
+Package: scales
+Source: CRAN
+Version: 0.2.4
+Hash: b8b1af97bd07818605223060386b00dd
+Requires: dichromat, labeling, munsell, plyr, RColorBrewer
+
+Package: SparseM
+Source: CRAN
+Version: 1.6
+Hash: ebefb2caf6ba73d3202d5153db1af0d8
+
+Package: stringi
+Source: CRAN
+Version: 0.4-1
+Hash: 955e96fc5961bf9f7b3ca916f9b1e606
+
+Package: stringr
+Source: CRAN
+Version: 0.6.2
+Hash: cdde0cfa0f52cffeaca23a11a3899779
+
+Package: tidyr
+Source: CRAN
+Version: 0.2.0
+Hash: 3b379415e9e88d4f559b380819893304
+Requires: dplyr, lazyeval, reshape2, stringi
+
+Package: tree
+Source: CRAN
+Version: 1.0-35
+Hash: 1be941fed7f7441ad0a50567b1e7fd78
+
+Package: xtable
+Source: CRAN
+Version: 1.7-3
+Hash: af110253b140f3f7199c0cac37536a2f
+
+Package: zoo
+Source: CRAN
+Version: 1.7-11
+Hash: a412b124ff249b078d9cd870de913c90
