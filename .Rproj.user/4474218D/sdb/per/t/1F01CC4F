@@ -1,0 +1,21 @@
+{
+    "contents" : "",
+    "created" : 1375484627857.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "1F01CC4F",
+    "lastKnownWriteTime" : 7599093446039907584,
+    "path" : null,
+    "properties" : {
+        "caption" : "sotc10",
+        "contentUrl" : "content?title=sotc10&file=101eb85641114af7ac1de120e346461f.htm",
+        "displayedObservations" : 1000,
+        "displayedVariables" : 100,
+        "totalObservations" : 20271,
+        "variables" : 206
+    },
+    "source_on_save" : false,
+    "type" : "r_dataframe"
+}

@@ -1,0 +1,21 @@
+{
+    "contents" : "",
+    "created" : 1375117703646.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "EB2E259B",
+    "lastKnownWriteTime" : 0,
+    "path" : null,
+    "properties" : {
+        "caption" : "dfall",
+        "contentUrl" : "content?title=dfall&file=a01b6e99ae7f47ecbdc0a6c3876f0454.htm",
+        "displayedObservations" : "20",
+        "displayedVariables" : 4,
+        "totalObservations" : "20",
+        "variables" : "3"
+    },
+    "source_on_save" : false,
+    "type" : "r_dataframe"
+}

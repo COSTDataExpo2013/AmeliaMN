@@ -1,0 +1,15 @@
+{
+    "contents" : "# Histograms\n# This example is just a histogram of the variable diamonds$table. What is x? X is just the variable tag. \n# Not related to the variable x in the diamonds data set. \ngigvis(diamonds, props(x ~ table),\n       branch_histogram()\n)\n\n# Bar charts\ngigvis(csat[csat$citystate==\"St. Paul, MN\",],\n       props = props(x ~ Response, y ~ Freq, fill ~ Response),\n       mark_rect(props(y2 = constant(0, scale = TRUE), width = band())),\n       scales = scales(scale_ordinal(\"x\", range = \"width\", padding = 0, points = FALSE))\n)\n\n# What if I wanted it to cycle through all the communities?\nmtc1 <- reactive({\n  invalidateLater(2000, NULL);\n  csat[csat$citystate==levels(csat$citystate)[sample(26, 1)],]\n})\ngigvis(mtc1, props(x ~ Response, y ~ Freq, fill ~ Response),\n       mark_rect(props(y2 = constant(0, scale = TRUE), width = band())),\n       scales = scales(scale_ordinal(\"x\", range = \"width\", padding = 0, points = FALSE)),\n       dynamic = TRUE\n)\n\n\n",
+    "created" : 1375485493082.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2457573723",
+    "id" : "90C339EA",
+    "lastKnownWriteTime" : 1375489600,
+    "path" : "~/Dropbox/RStudioStuff/RStudioStuff/WorkingDocuments/SoulOfCommunity/gigvisTrial.R",
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}
