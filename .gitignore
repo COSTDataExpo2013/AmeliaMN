@@ -1,4 +1,10 @@
-.Rproj.user
-.Rhistory
-.RData
-packrat/lib*/
+*
+
+!packrat/packrat.lock
+!packrat/src
+!packrat/init.R
+!packrat/packrat.ops
+!CodeFinalDraft.R
+!PaperFinalDraft.Rnw
+!data
+!SoCbib
