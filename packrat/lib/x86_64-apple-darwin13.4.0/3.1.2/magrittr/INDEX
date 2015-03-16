@@ -1,0 +1,5 @@
+%>%                     Pipe an object forward into a function
+                        call/expression.
+debug_pipe              Place a debug browser in a chain of commands.
+extract                 Aliases
+magrittr                magrittr - a forward-pipe operator for R

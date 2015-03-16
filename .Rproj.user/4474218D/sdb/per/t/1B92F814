@@ -1,0 +1,25 @@
+{
+    "contents" : "",
+    "created" : 1426205349697.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "1B92F814",
+    "lastKnownWriteTime" : 4554736640,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "6ymywswj2k",
+        "caption" : "cormat",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=cormat&cache_key=6ymywswj2k",
+        "displayedObservations" : "14",
+        "environment" : "",
+        "object" : "cormat",
+        "totalObservations" : "14",
+        "variables" : "14"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "type" : "r_dataframe"
+}

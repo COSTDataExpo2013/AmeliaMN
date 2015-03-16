@@ -1,0 +1,18 @@
+Package: gtools
+Title: Various R programming tools
+Description: Various R programming tools
+Version: 3.4.1
+Date: 2014-05-27
+Author: Gregory R. Warnes, Ben Bolker, and Thomas Lumley
+Maintainer: Gregory R. Warnes <greg@warnes.net>
+License: LGPL-2.1
+Packaged: 2014-05-28 00:24:58 UTC; warnes
+NeedsCompilation: yes
+Repository: CRAN
+Date/Publication: 2014-05-28 09:52:04
+Built: R 3.1.2; x86_64-apple-darwin13.4.0; 2015-01-09 16:28:27 UTC;
+    unix
+Archs: gtools.so.dSYM
+InstallAgent: packrat 0.4.1.1
+InstallSource: CRAN
+Hash: e4c2510a4ba86b5826f05d9f3639cb13
