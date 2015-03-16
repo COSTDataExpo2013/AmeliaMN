@@ -1,0 +1,15 @@
+# Ignore everything
+*
+
+# But not these files...
+!.gitignore
+!packrat
+!PaperFinalDraft.Rnw
+!CodeFinalDraft.R
+!data
+!LaTeX
+!SoCbib
+# etc...
+
+# ...even if they are in subdirectories
+!*/

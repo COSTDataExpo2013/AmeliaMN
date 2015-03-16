@@ -153,7 +153,7 @@ for (i in 2:92){
 }
 numLevels <- numLevels[-c(3, 4, 6, 16:18, 73, 75)]
 resp <- qplot(numLevels,binwidth=1,xlab="Number of levels on the scale", ylab="Number of questions using the scale", main="Distribution of various scale lengths used in 2010 survey")
-resp <- resp +scale_x_continuous(breaks=seq(from=0, to=15, by=2))}
+resp <- resp + scale_x_continuous(breaks=seq(from=0, to=15, by=1), limits=c(0,14))
 
 
 satisfaction <- summary(sotc$community_sat)/length(sotc$community_sat)

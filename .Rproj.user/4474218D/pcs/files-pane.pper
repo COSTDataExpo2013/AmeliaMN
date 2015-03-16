@@ -1,8 +1,8 @@
 {
-    "path" : "~/gigvis/R",
+    "path" : "~/Dropbox/Projects/SoulOfCommunity",
     "sortOrder" : [
         {
-            "ascending" : false,
+            "ascending" : true,
             "columnIndex" : 4
         },
         {
