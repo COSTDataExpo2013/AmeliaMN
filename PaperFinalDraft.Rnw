@@ -255,19 +255,15 @@ brandetonsat <- tbl_df(posform) %>% filter(citystate=="Bradenton, FL") %>% group
 
 <<communitysatplot, fig.cap="Responses to the question, \`\`Taking everything into account, how satisified are you with this community as a place to live?\" Communities are ordered by percentage of positive responses in 2008, making it clear the differences in distribution in 2009 and 2010.", out.width="0.99\\linewidth",fig.width = 9.5,fig.height=15,>>=
 baseplot <- ggplot(mapping = aes(x=citystate, y=Freq, fill = Response, order=Response))
-                   + facet_wrap(~year, nrow=3)
-baseplot <- baseplot 
+  + facet_wrap(~year, nrow=3)
   + geom_bar(data = trial2$neg, stat = "identity") 
   + scale_fill_manual(breaks=c("Not at all satisfied", "2", "3", "4", "Extremely satisfied"), 
                       values=colorsB, name="Response") 
-  + geom_bar(data = trial2$pos, stat = "identity")
-baseplot <- baseplot 
+  + geom_bar(data = trial2$pos, stat = "identity") 
   + coord_flip() 
   + ggtitle("Community satisfaction") 
   + xlab("") 
-  +y lab("")
-
-baseplot <- baseplot 
+  + ylab("")
   + scale_y_continuous(limits=c(-0.5, 1), breaks=seq(from=-0.5, to=0.75, by=0.25), 
                        labels=c("50%", "25%", "0", "25%", "50%", "75%")) 
   + theme(legend.text=element_text(size=14), legend.title=element_text(size=16), 
@@ -322,18 +318,13 @@ trial1 <- LikertData(positive, negative, neutral=NULL, dataset=dfall)
 @
 
 <<YNall, out.width="0.99\\linewidth",fig.width = 15,fig.height=9.5,fig.cap="Responses to yes/no questions about participants' behaviors, comparing all three survey years.">>=
-baseplot <- ggplot(mapping = aes(Question, Freq, fill = Response) 
-                   + facet_wrap(~Year)
-baseplot <- baseplot 
+baseplot <- ggplot(mapping = aes(Question, Freq, fill = Response))
+  + facet_wrap(~Year)
   + geom_bar(data = trial1$neg, stat = "identity") 
   + geom_bar(data = trial1$pos, stat = "identity")
-baseplot <- baseplot 
   + scale_y_continuous(breaks=seq(from=-0.75, to=0.75, by=0.25), labels=percent)
-
-baseplot <- baseplot + coord_flip()+ xlab("")
-baseplot <- baseplot 
+  + coord_flip()+ xlab("")
   + scale_x_discrete(labels=rev(c("Registered to vote \n", "Voted in local election \n", "Donated money to a \n local organization", "Attended a local \n festival or event", "Gave money or food \n to an individual", "Participated in a \n church event", "Performed local \n volunteer work", "Worked with other residents \n to make change", "Attended a local \n public meeting", "Provided free shelter \n to an individual")))
-baseplot <- baseplot 
   + ylab("") 
   + theme(legend.text=element_text(size=14), legend.title=element_text(size=16), 
           axis.text.y=element_text(size=20), title=element_text(size=24), 
@@ -395,14 +386,11 @@ baseplot <- ggplot(dfcitiesYes)
   + aes(Question, diff, fill = col) 
   + facet_wrap(~citystate, ncol=3) 
   + geom_bar(stat = "identity")
-baseplot <- baseplot + coord_flip()
-
-baseplot <- baseplot 
+  + coord_flip()
   + guides(fill=FALSE)
   + scale_y_continuous(breaks=seq(from=-.5, to=.5, by=.125),
                        labels=c("50%","", "25%","", "0","", "25%","", "50%"))
   +scale_x_discrete(labels=LETTERS[10:1])
-baseplot <- baseplot 
   + ylab("") 
   + xlab("")
   + theme(axis.text.y=element_text(size=12), title=element_text(size=18), 
