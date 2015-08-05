@@ -103,7 +103,9 @@ LikertData <- function(positive, negative, neutral=NULL, dataset){
 
 <<calculatingInGroupFeelings>>=
 FeelingsC <- function(dataset){
-  Feelings <- dataset %>% group_by(citystate, InGroup) %>% summarise(percents= sum(Freq))
+  Feelings <- dataset %>% 
+    group_by(citystate, InGroup) %>% 
+    summarise(percents= sum(Freq))
   Feelings <- data.frame(Feelings)
   newDF <- data.frame(InGroup=NA, OutGroup=NA, citystate=levels(Feelings$citystate))
   newDF$ratio <- (Feelings[Feelings$InGroup=="FALSE" | Feelings$InGroup=="No",]$percents) - (Feelings[Feelings$InGroup=="TRUE" | Feelings$InGroup=="Yes",]$percents)
@@ -210,7 +212,9 @@ Interestingly, with the incomplete responses removed, the 2010 data set is reduc
 count_na <- function(x) sum(is.na(x))
 missing10 <- count_na(sotc10$recommend)
 missing09 <- count_na(sotc09$recommend)
-missing08 <- group_by(sotc08, recommend == "(Refused)") %>% summarise(n = n()) 
+missing08 <- sotc08 %>%
+  group_by(recommend == "(Refused)") %>% 
+  summarise(n = n()) 
 missing <- c(missing08$n[2], missing09, missing10)
 missingtable <- as.matrix(data.frame(Year=c(2008, 2009, 2010), Missing=missing, Total=c(dim(sotc08)[1], dim(sotc09)[1], dim(sotc10)[1]), Percent=missing/c(dim(sotc08)[1], dim(sotc09)[1], dim(sotc10)[1])*100))
 rownames(missingtable) <- NULL
@@ -224,9 +228,18 @@ Knowing that the question about community satisfaction was the only survey quest
 To visualize this, a set of stacked distribution graphs were created \citep{RobHei2011}. These stacked distribution graphs are centered around zero and use a diverging color scale to give an overall graphical sense of the amount of positive and negative responses across groups. Figure \ref{fig:communitysatplot} shows the distribution of responses to the question, ``Taking everything into account, how satisfied are you with this community as a place to live?'' and is ordered by the communities with the largest total positive responses in 2008, which highlights the changes in 2009 and 2010. 
 
 <<communitysat>>=
-tmp1 <- tbl_df(sotc08) %>% group_by(citystate, community_sat) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2008)
-tmp2 <- tbl_df(sotc09) %>% group_by(citystate, community_sat) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2009)
-tmp3 <- tbl_df(sotc10) %>% group_by(citystate, community_sat) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2010)
+tmp1 <- tbl_df(sotc08) %>% 
+  group_by(citystate, community_sat) %>% 
+  summarise(n = n()) %>% 
+  mutate(frac=prop.table(n), year=2008)
+tmp2 <- tbl_df(sotc09) %>% 
+  group_by(citystate, community_sat) %>% 
+  summarise(n = n()) %>% 
+  mutate(frac=prop.table(n), year=2009)
+tmp3 <- tbl_df(sotc10) %>% 
+  group_by(citystate, community_sat) %>% 
+  summarise(n = n()) %>% 
+  mutate(frac=prop.table(n), year=2010)
 
 tmp <- rbind(tmp1, tmp2, tmp3)
 names(tmp) <- c("citystate", "Response", "n", "Freq", "year")
@@ -238,8 +251,13 @@ negative <- c("2", "Not at all satisfied")
 
 trial2 <- LikertData(positive, negative, neutral, tmp)
 
-extremelysat08 <- tbl_df(trial2$pos) %>% filter(year==2008) %>% group_by(citystate) %>% summarise(tot=sum(Freq)) 
-extremelysat <- tbl_df(trial2$pos) %>% group_by(citystate, year) %>% summarise(tot=sum(Freq)) 
+extremelysat08 <- tbl_df(trial2$pos) %>% 
+  filter(year==2008) %>% 
+  group_by(citystate) %>% 
+  summarise(tot=sum(Freq)) 
+extremelysat <- tbl_df(trial2$pos) %>% 
+  group_by(citystate, year) %>% 
+  summarise(tot=sum(Freq)) 
 mostsat <- order(extremelysat08$tot)
 
 masterData <- data.frame(citystate=extremelysat$citystate, year=extremelysat$year, communitysat=extremelysat$tot)
@@ -252,8 +270,14 @@ trial2$neg$Response <- factor(trial2$neg$Response, levels=levels(trial2$neg$Resp
 
 posform <- trial2$pos
 
-maconsat <- tbl_df(posform) %>% filter(citystate=="Macon, GA") %>% group_by(year) %>% summarise(totalper=sum(Freq))
-brandetonsat <- tbl_df(posform) %>% filter(citystate=="Bradenton, FL") %>% group_by(year) %>% summarise(totalper=sum(Freq))
+maconsat <- tbl_df(posform) %>% 
+  filter(citystate=="Macon, GA") %>% 
+  group_by(year) %>% 
+  summarise(totalper=sum(Freq))
+brandetonsat <- tbl_df(posform) %>% 
+  filter(citystate=="Bradenton, FL") %>% 
+  group_by(year) %>% 
+  summarise(totalper=sum(Freq))
 @
 
 <<communitysatplot, fig.cap="Responses to the question, \`\`Taking everything into account, how satisified are you with this community as a place to live?\" Communities are ordered by percentage of positive responses in 2008, making it clear the differences in distribution in 2009 and 2010.", out.width="0.99\\linewidth",fig.width = 9.5,fig.height=15,>>=
@@ -393,10 +417,16 @@ dfcitiesYes$Question <- factor(dfcitiesYes$Question, levels=levels(dfcitiesYes$Q
 @
 
 <<startingoverall>>=
-dfcities09 <- citystateResp(sotc09) %>% mutate(year="2009")
-dfcities08 <- citystateResp(sotc08) %>% mutate(year="2008")
-dfcities10 <- dfcities10 %>% mutate(year="2010")
-md1 <-rbind(dfcities10, dfcities09, dfcities08) %>% filter(Response=="Yes") %>% select(-Response, -diff) %>% filter(Question %in% c("registered_vote", "voted_local", "volunteer", "worked_change", "public_meeting"))
+dfcities09 <- citystateResp(sotc09) %>% 
+  mutate(year="2009")
+dfcities08 <- citystateResp(sotc08) %>% 
+  mutate(year="2008")
+dfcities10 <- dfcities10 %>% 
+  mutate(year="2010")
+md1 <-rbind(dfcities10, dfcities09, dfcities08) %>% 
+  filter(Response=="Yes") %>% 
+  select(-Response, -diff) %>% 
+  filter(Question %in% c("registered_vote", "voted_local", "volunteer", "worked_change", "public_meeting"))
 md1 <- melt(md1)
 md1 <- dcast(md1, citystate + year ~ Question, mean)
 md1$year <- as.numeric(md1$year)
@@ -461,14 +491,26 @@ This definition puts emphasis on communities where out-of-subgroup participants 
 To begin, we investigate meta-knowledge about racial and ethnic minorities. This proved somewhat difficult because each year of data collection used a slightly different set of possible answer choices to the question ``Which of these groups best describes your racial background?'' and because there were so many participants who refused to answer (particularly in 2010). 
 
 <<minorities>>=
-races10 <- filter(sotc10, race != " " & race != "4" & race != "Don't Know") %>% group_by(race) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2010)
+races10 <- sotc10 %>% 
+  filter(race != " " & race != "4" & race != "Don't Know") %>% 
+  group_by(race) %>% 
+  summarise(n = n()) %>% 
+  mutate(frac=prop.table(n), year=2010)
 races10$race <- factor(races10$race)
 levels(races10$race) <- c(levels(races10$race)[1:5], "Some other race", levels(races10$race)[7])
 
-races09 <- filter(sotc09, race != " " & race != "4" & race != "Don't know") %>% group_by(race) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2009)
+races09 <- sotc09 %>% 
+  filter(race != " " & race != "4" & race != "Don't know") %>% 
+  group_by(race) %>% 
+  summarise(n = n()) %>% 
+  mutate(frac=prop.table(n), year=2009)
 races09$race <- factor(races09$race)
 
-races08 <- filter(sotc08, race != " " & race != "4" & race != "(DK)" & race != "None") %>% group_by(race) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2008)
+races08 <- sotc08 %>% 
+  filter(race != " " & race != "4" & race != "(DK)" & race != "None") %>% 
+  group_by(race) %>% 
+  summarise(n = n()) %>% 
+  mutate(frac=prop.table(n), year=2008)
 races08$race <- factor(races08$race)
 levels(races08$race) <- c("Hispanic", "More than one", "Refused", "American Indian or Alaskan", "Asian", "Black or African-American", "Native Hawaiian or other Pacific Islander", "Some other race", "White")
 
@@ -494,16 +536,32 @@ raceOver
 The overall distribution of responses to the demographic race question is shown in Figure \ref{fig:overallRaceplot}. This figure is shown with absolute numbers of participants, rather than fractions, to underscore how different the 2010 data is. Notice that in 2010, the largest category was ``Refused,'' and without that category the rest of the responses are not on the same scale as previous years. As the plot shows, the sample sizes for individual minority race responses were somewhat small each year, so for the investigation on subgroup meta-knowledge, we combined all the minority responses into one group that we refer to as Non-white. This category contains all participants who reported a race that was not White, but does not include participants who declined to give a response to the question. For a condensed summary of what the White/Non-white criteria means for the overall percentages, see Figure \ref{fig:samplesize}. 
 
 <<minoritiesOverYearsE>>=
-minoritiesYN08 <- filter(sotc08, race != " " & race != "4" & race != "(DK)" & race != "None" & race != "(Refused)") %>% filter(minorities != "(DK)" & minorities != "(Refused)") %>% group_by(citystate, race != "White", minorities) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2008)
+minoritiesYN08 <- sotc08 %>% 
+  filter(race != " " & race != "4" & race != "(DK)" & race != "None" & race != "(Refused)") %>% 
+  filter(minorities != "(DK)" & minorities != "(Refused)") %>% 
+  group_by(citystate, race != "White", minorities) %>% 
+  summarise(n = n()) %>% 
+  mutate(frac=prop.table(n), year=2008)
 names(minoritiesYN08) <- n1
 
-minoritiesYN09 <- filter(sotc09, race != " " & race != "4" & race != "Don't know" & race != "Refused") %>% filter(is.na(minorities)==FALSE) %>% group_by(citystate, race != "White", minorities) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2009)
+minoritiesYN09 <- sotc09 %>% 
+  filter(race != " " & race != "4" & race != "Don't know" & race != "Refused") %>% 
+  filter(is.na(minorities)==FALSE) %>% group_by(citystate, race != "White", minorities) %>% 
+  summarise(n = n()) %>% 
+  mutate(frac=prop.table(n), year=2009)
 names(minoritiesYN09) <- n1
 
-minoritiesYN10 <- filter(sotc10, race != " " & race != "4" & race != "Don't Know" & race != "Refused") %>% filter(is.na(minorities)==FALSE) %>% group_by(citystate, race != "White", minorities) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2010)
+minoritiesYN10 <- sotc10 %>% 
+  filter(race != " " & race != "4" & race != "Don't Know" & race != "Refused") %>% 
+  filter(is.na(minorities)==FALSE) %>% 
+  group_by(citystate, race != "White", minorities) %>% summarise(n = n()) %>% 
+  mutate(frac=prop.table(n), year=2010)
 names(minoritiesYN10) <- n1
 
-whiteYN <- rbind(minoritiesYN08, minoritiesYN09, minoritiesYN10) %>% group_by(year, InGroup, Response) %>% summarise(tot = sum(n)) %>% mutate(newFreq=prop.table(tot))
+whiteYN <- rbind(minoritiesYN08, minoritiesYN09, minoritiesYN10) %>% 
+  group_by(year, InGroup, Response) %>% 
+  summarise(tot = sum(n)) %>% 
+  mutate(newFreq=prop.table(tot))
 whiteYN <- rename(whiteYN, Freq=newFreq, n=tot)
 
 neutral <- c("3")
@@ -515,8 +573,18 @@ whiteYears$neg$Response <- factor(whiteYears$neg$Response, levels=levels(whiteYe
 @
 
 <<samplesize, out.width="0.99\\linewidth",fig.width = 8.5,fig.height=4.5, fig.cap="Sample sizes for plots about meta-knowledge regarding the community as a place for minorities.">>=
-whiteYN1 <- tbl_df(whiteYN) %>% group_by(year, InGroup) %>% summarise(howmany=sum(n)) %>% mutate(frac=prop.table(howmany))
-whiteplot <- ggplot(aes(x=year, y=howmany), data=whiteYN1)+geom_bar(aes(fill=InGroup), position="dodge", stat="identity")+xlab("Year")+ylab("Sample size")+guides(fill=guide_legend(title=NULL))+guides(fill=guide_legend(title=NULL))+scale_fill_manual(values=colors2, labels=c("White", "Non-white"))
+whiteYN1 <- tbl_df(whiteYN) %>% 
+  group_by(year, InGroup) %>% 
+  summarise(howmany=sum(n)) %>% 
+  mutate(frac=prop.table(howmany))
+
+whiteplot <- ggplot(aes(x=year, y=howmany), data=whiteYN1) +
+  geom_bar(aes(fill=InGroup), position="dodge", stat="identity") + 
+  xlab("Year") + 
+  ylab("Sample size") + 
+  guides(fill=guide_legend(title=NULL)) + 
+  guides(fill=guide_legend(title=NULL)) + 
+  scale_fill_manual(values=colors2, labels=c("White", "Non-white"))
 whiteplot
 @
 
@@ -659,14 +727,25 @@ The correlation suggests a positive relationship between the variables, but it's
 \label{mseniors}
 
 <<OverallSeniors>>=
-seniorGroup10 <- filter(sotc10, is.na(seniors) == FALSE) %>% group_by(citystate, age >= 62, seniors) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2010)
+seniorGroup10 <- sotc10 %>% 
+  filter(is.na(seniors) == FALSE) %>% 
+  group_by(citystate, age >= 62, seniors) %>% 
+  summarise(n = n()) %>% 
+  mutate(frac=prop.table(n), year=2010)
 
 names(seniorGroup10) <- n1
 
-seniorGroup09 <- filter(sotc09, is.na(age) == FALSE) %>% group_by(citystate, age >= 62, seniors) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2009)
+seniorGroup09 <- sotc09 %>% 
+  filter(is.na(age) == FALSE) %>% 
+  group_by(citystate, age >= 62, seniors) %>% 
+  summarise(n = n()) %>% 
+  mutate(frac=prop.table(n), year=2009)
 names(seniorGroup09) <- n1
 
-seniorGroup08 <- group_by(sotc08, citystate, age >=62, seniors) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2008)
+seniorGroup08 <- sotc08 %>%
+  group_by(citystate, age >=62, seniors) %>% 
+  summarise(n = n()) %>% 
+  mutate(frac=prop.table(n), year=2008)
 names(seniorGroup08) <- n1
 
 seniorYears <- rbind(seniorGroup08, seniorGroup09, seniorGroup10)
@@ -674,7 +753,10 @@ seniorYears$Response <- factor(seniorYears$Response, levels=levels(seniorYears$R
 @
 
 <<seniorSS, out.width= "0.99\\linewidth", fig.width = 8.5, fig.height= 4.5, fig.cap = "Sample sizes for plots about meta-knowledge regarding the community as a place for seniors.">>=
-seniorSS <- tbl_df(seniorYears) %>% group_by(year, InGroup) %>% summarise(number=sum(n)) %>% mutate(percentage=(100*number)/sum(number))
+seniorSS <- tbl_df(seniorYears) %>% 
+  group_by(year, InGroup) %>% 
+  summarise(number=sum(n)) %>% 
+  mutate(percentage=(100*number)/sum(number))
 seniorSS$InGroup[seniorSS$InGroup=="FALSE"] <- "Non-seniors"
 seniorSS$InGroup[seniorSS$InGroup=="TRUE"] <- "Seniors"
 
@@ -703,13 +785,16 @@ vert <- mean(totPos$Seniors)
 <<seniorOverallData>>=
 forM <- filter(seniorOverall$pos, year==2008)
 forM <- tbl_df(forM)
-comp08 <- FeelingsC(forM) %>% mutate(year="2008")
+comp08 <- FeelingsC(forM) %>% 
+  mutate(year="2008")
 forM <- filter(seniorOverall$pos, year==2009)
 forM <- tbl_df(forM)
-comp09 <- FeelingsC(forM) %>% mutate(year="2009")
+comp09 <- FeelingsC(forM) %>% 
+  mutate(year="2009")
 forM <- filter(seniorOverall$pos, year==2010)
 forM <- tbl_df(forM)
-comp10 <- FeelingsC(forM) %>% mutate(year="2010")
+comp10 <- FeelingsC(forM) %>% 
+  mutate(year="2010")
 
 comp <- rbind(comp08, comp09, comp10)
 names(comp) <- c("seniors", "nonseniors", "citystate", "seniordiffs", "year")
@@ -722,7 +807,10 @@ The yearly ratings distributions are shown in Figure \ref{fig:seniorOverallPlot}
 
 <<seniorOverallPlot,out.width="0.99\\linewidth",fig.width = 8.5, fig.height=5.5, fig.cap="Responses to the question, \`\`How is your community as a place for seniors?\" Seniors are defined as survey participants aged 62 and older, non-seniors are those under 62. Notice that seniors consistently rated their community more highly than did non-seniors over all three survey years.">>=
 
-seniorYears2 <- seniorYears %>% group_by(year, InGroup, Response) %>% summarise(n3 = sum(n)) %>% mutate(newFreq = prop.table(n3))
+seniorYears2 <- seniorYears %>% 
+  group_by(year, InGroup, Response) %>% 
+  summarise(n3 = sum(n)) %>% 
+  mutate(newFreq = prop.table(n3))
 names(seniorYears2) <- c("year", "InGroup", "Response", "n", "Freq")
 seniorYears2 <- LikertData(positive, negative, neutral, seniorYears2)
 
@@ -807,16 +895,28 @@ Then, the question becomes whether the $MK_S$ score is correlated with community
 The last subgroup to study in this exploration is families with young children. For this section, we split participants between those who reported having dependent children under the age of 18 living in their household and those who did not. Intuitively, it makes sense that a parent of an older child (say, a teenager) would have higher meta-knowledge about the community as a place for families with young children than a participant who never had children or whose children have grown up and moved away. While the data included more granular demographic details about the ages of the children in the households, splitting the data into participants with children and those without made the groups closer in size. To see the sample sizes and percentages, see Figure \ref{fig:kidsSS}. 
 
 <<kidsbyYear>>=
-kidGroup10 <- filter(sotc10, children == "Yes" | children == "No", is.na(families_kids) == FALSE) %>% group_by(citystate, children, families_kids) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2010)
+kidGroup10 <- sotc10 %>% 
+  filter(children == "Yes" | children == "No", is.na(families_kids) == FALSE) %>% 
+  group_by(citystate, children, families_kids) %>% 
+  summarise(n = n()) %>% 
+  mutate(frac=prop.table(n), year=2010)
 names(kidGroup10) <- n1
 
-kidGroup09 <- filter(sotc09, children == "Yes" | children == "No", is.na(families_kids) == FALSE) %>% group_by(citystate, children, families_kids) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2009)
+kidGroup09 <- sotc09 %>% 
+  filter(children == "Yes" | children == "No", is.na(families_kids) == FALSE) %>% 
+  group_by(citystate, children, families_kids) %>% 
+  summarise(n = n()) %>% 
+  mutate(frac=prop.table(n), year=2009)
 names(kidGroup09) <- n1
 
 kidGroups <- LikertData(positive, negative, neutral, kidGroup09)
 kidGroups$neg$Response <- factor(kidGroups$neg$Response, levels=levels(kidGroups$neg$Response)[c(2,3,1)])
 
-kidGroup08 <- filter(sotc08, children == "Yes" | children == "No", is.na(families_kids) == FALSE & families_kids != "(DK)" & families_kids != "(Refused)") %>% group_by(citystate, children, families_kids) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2008)
+kidGroup08 <- sotc08 %>% 
+  filter(children == "Yes" | children == "No", is.na(families_kids) == FALSE & families_kids != "(DK)" & families_kids != "(Refused)") %>% 
+  group_by(citystate, children, families_kids) %>% 
+  summarise(n = n()) %>% 
+  mutate(frac=prop.table(n), year=2008)
 names(kidGroup08) <- n1
 
 kidYears <- rbind(kidGroup08, kidGroup09, kidGroup10)
@@ -825,25 +925,33 @@ forMaster <- LikertData(positive, negative, neutral, kidYears)
 forMaster$neg$Response <- factor(forMaster$neg$Response, levels=levels(forMaster$neg$Response)[c(2,3,1)])
 forM <- filter(forMaster$pos, year==2008)
 forM <- tbl_df(forM)
-comp08 <- FeelingsC(forM) %>% mutate(year="2008")
+comp08 <- FeelingsC(forM) %>% 
+  mutate(year="2008")
 forM <- filter(forMaster$pos, year==2009)
 forM <- tbl_df(forM)
-comp09 <- FeelingsC(forM) %>% mutate(year="2009")
+comp09 <- FeelingsC(forM) %>% 
+  mutate(year="2009")
 forM <- filter(forMaster$pos, year==2010)
 forM <- tbl_df(forM)
-comp10 <- FeelingsC(forM) %>% mutate(year="2010")
+comp10 <- FeelingsC(forM) %>% 
+  mutate(year="2010")
 
 comp <- rbind(comp08, comp09, comp10)
 names(comp) <- c("withKids", "noKids", "citystate", "kiddiffs", "year")
 comp$year <- as.numeric(comp$year)
 masterData <- left_join(masterData, comp)
 
-kidYears <- kidYears %>% group_by(year, InGroup, Response) %>% summarise(totalnum = sum(n)) %>% mutate(totalFreq=prop.table(totalnum))
+kidYears <- kidYears %>% 
+  group_by(year, InGroup, Response) %>% summarise(totalnum = sum(n)) %>% 
+  mutate(totalFreq=prop.table(totalnum))
 kidYears <- rename(kidYears, Freq=totalFreq, num = totalnum)
 @
 
 <<kidsSS,out.width="0.99\\linewidth",fig.width = 8.5,fig.height=4.5, fig.cap="Sample sizes for plots about meta-knowledge regarding the community as a place for families with young children.">>=
-kidSS <- group_by(kidYears, year, InGroup) %>% summarise(number=sum(num)) %>% mutate(percentage=100*number/sum(number))
+kidSS <- group_by(kidYears, year, InGroup) %>% 
+  summarise(number=sum(num)) %>% 
+  mutate(percentage=100*number/sum(number))
+
 levels(kidSS$InGroup) <- c("Don't know", "Refused", "Childless households", "Families with children")
 kidsplot <- ggplot(aes(x=year, y=number), data=kidSS)+geom_bar(aes(fill=InGroup), position="dodge", stat="identity")+xlab("Year")+ylab("Sample size")+guides(fill=guide_legend(title=NULL))+scale_fill_manual(values=colors2)
 kidsplot 
@@ -947,7 +1055,9 @@ Instead of creating hard-to-interpret models, we simply consider more correlatio
 masterData$racediffs <- abs(masterData$racediffs)
 masterData$seniordiffs <- abs(masterData$seniordiffs)
 
-melted <- select(masterData, -citystate, -year) %>% cor(use="complete.obs") %>% melt()
+melted <- select(masterData, -citystate, -year) %>% 
+  cor(use="complete.obs") %>% 
+  melt()
 varnames <- c("Community satisfaction", "Registered to vote", "Volunteered", "Attended a public meeting", "Voted in a local election", "Worked to make change", "Non-white rating", "White rating", "|MK_R|", "Senior rating", "Non-Senior rating", "|MK_S|", "Families with children rating", "Childless household rating", "MK_C")
   
 cp <- ggplot(data=melted, aes(x=Var1, y=Var2, fill=value)) +
