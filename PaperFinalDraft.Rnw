@@ -200,7 +200,7 @@ matchup1 <- sum(is.na(sotc10$recommend) & is.na(sotc10$college))
 matchup2 <- sum(is.na(sotc10$college) & is.na(sotc10$registered_vote))
 @
 
-In order to explore this, we study the pattern of missing data within the 2010 data set. This data set includes a large number of responses that are extremely sparse, containing almost no completed survey questions, but generally completed demographic information. For example, the question ``How likely are you to recommend this community to a friend or associate as a place to live?'' has \Sexpr{sum(is.na(sotc10$recommend)==TRUE)} missing values, and the question ``The overall quality of the colleges and universities'' has \Sexpr{sum(is.na(sotc10$college)==TRUE)} missing values. Just between those two questions, the overlap of missing values for both questions is \Sexpr{matchup1}. In other words, almost all the entries that are missing a response to the question about recommending the community are also missing a response to the question about colleges. Similarly, there are \Sexpr{matchup2} respondents missing both the question about colleges and the question ``Are you registered to vote?''
+In order to explore this, we study the pattern of missing data within the 2010 data set. This data set includes a large number of responses that are extremely sparse, containing almost no completed survey questions, but generally completed demographic information. For example, the question ``How likely are you to recommend this community to a friend or associate as a place to live?'' has \Sexpr{sum(is.na(sotc10$recommend))} missing values, and the question ``The overall quality of the colleges and universities'' has \Sexpr{sum(is.na(sotc10$college))} missing values. Just between those two questions, the overlap of missing values for both questions is \Sexpr{matchup1}. In other words, almost all the entries that are missing a response to the question about recommending the community are also missing a response to the question about colleges. Similarly, there are \Sexpr{matchup2} respondents missing both the question about colleges and the question ``Are you registered to vote?''
 
 These questions were chosen arbitrarily, but the pattern is almost the same no matter which pair of survey questions was selected. As a result, we chose to use the question about recommending the community to a friend or associate as a proxy for the overall missing data. That is, if the response was missing an answer to that question, we considered it to be a ``missing'' response. The particular question was selected as an indicator of missing data because it was the first question on the survey (in order of the survey script) to have this scale of missing data. Better methods could have been used, for example setting a cutoff number of missing questions within a single respondent, but this seemed to be fairly accurate for our purposes. 
 
@@ -321,29 +321,35 @@ Over all three years, the most common behavior was being registered to vote, fol
 <<twolevel>>=
 twolevel <- c("registered_vote", "volunteer", "public_meeting", "voted_local", "worked_change", "church", "festival", "donated_org", "donated_individual", "donated_shelter")
 
-# Function that takes a dataset and calculates the percentages of cases overall
-findPercen <- function(dataset){
-  dfall <- data.frame()
-  for (i in 1:length(twolevel)){
-  if(twolevel[i] %in% names(dataset)){
-      tmp <- data.frame(Question=twolevel[i], prop.table(table(dataset[,twolevel[i]])))
-      dfall <- rbind(dfall, tmp)
-  }
-  else{
-    tmp <- data.frame(Question=twolevel[i], Var1 = c("No", "Yes"), Freq=c(NA, NA))
-    dfall <- rbind(dfall, tmp)
-  }
-}
-names(dfall) <- c("Question", "Response", "Freq")
-return(dfall)
-}
-#dplyr would be much better here, but can't quite figure out how to forumulate it. 
-
-df10 <- findPercen(sotc10)
+df10 <- sotc10 %>%
+  select(one_of(twolevel)) %>%
+  mutate(id = 1:n()) %>%
+  tidyr::gather("Question", "Response", -id) %>%
+  group_by(Question, Response) %>%
+  filter(!is.na(Response)) %>%
+  summarise(n = n()) %>%
+  mutate(Freq = n/sum(n))
 df10$Year <- 2010
-df09 <- findPercen(sotc09)
+
+
+df09 <- sotc09 %>%
+  select(one_of(twolevel[c(1:5)])) %>%
+  mutate(id = 1:n()) %>%
+  tidyr::gather("Question", "Response", -id) %>%
+  group_by(Question, Response) %>%
+  filter(!is.na(Response)) %>%
+  summarise(n = n()) %>%
+  mutate(Freq = n/sum(n))
 df09$Year <- 2009
-df08 <- findPercen(sotc08)
+
+df08 <- sotc08 %>%
+  select(one_of(twolevel[c(1:5)])) %>%
+  mutate(id = 1:n()) %>%
+  tidyr::gather("Question", "Response", -id) %>%
+  group_by(Question, Response) %>%
+  filter(!is.na(Response) & Response != "(DK)" & Response != "(Refused)") %>%
+  summarise(n = n()) %>%
+  mutate(Freq = n/sum(n))
 df08$Year <- 2008
 
 dfall <- rbind(df10, df09, df08)
@@ -546,14 +552,14 @@ names(minoritiesYN08) <- n1
 
 minoritiesYN09 <- sotc09 %>% 
   filter(race != " " & race != "4" & race != "Don't know" & race != "Refused") %>% 
-  filter(is.na(minorities)==FALSE) %>% group_by(citystate, race != "White", minorities) %>% 
+  filter(!is.na(minorities)) %>% group_by(citystate, race != "White", minorities) %>% 
   summarise(n = n()) %>% 
   mutate(frac=prop.table(n), year=2009)
 names(minoritiesYN09) <- n1
 
 minoritiesYN10 <- sotc10 %>% 
   filter(race != " " & race != "4" & race != "Don't Know" & race != "Refused") %>% 
-  filter(is.na(minorities)==FALSE) %>% 
+  filter(!is.na(minorities)) %>% 
   group_by(citystate, race != "White", minorities) %>% summarise(n = n()) %>% 
   mutate(frac=prop.table(n), year=2010)
 names(minoritiesYN10) <- n1
@@ -728,7 +734,7 @@ The correlation suggests a positive relationship between the variables, but it's
 
 <<OverallSeniors>>=
 seniorGroup10 <- sotc10 %>% 
-  filter(is.na(seniors) == FALSE) %>% 
+  filter(!is.na(seniors)) %>% 
   group_by(citystate, age >= 62, seniors) %>% 
   summarise(n = n()) %>% 
   mutate(frac=prop.table(n), year=2010)
@@ -736,7 +742,7 @@ seniorGroup10 <- sotc10 %>%
 names(seniorGroup10) <- n1
 
 seniorGroup09 <- sotc09 %>% 
-  filter(is.na(age) == FALSE) %>% 
+  filter(!is.na(age)) %>% 
   group_by(citystate, age >= 62, seniors) %>% 
   summarise(n = n()) %>% 
   mutate(frac=prop.table(n), year=2009)
@@ -896,14 +902,14 @@ The last subgroup to study in this exploration is families with young children. 
 
 <<kidsbyYear>>=
 kidGroup10 <- sotc10 %>% 
-  filter(children == "Yes" | children == "No", is.na(families_kids) == FALSE) %>% 
+  filter(children == "Yes" | children == "No", !is.na(families_kids)) %>% 
   group_by(citystate, children, families_kids) %>% 
   summarise(n = n()) %>% 
   mutate(frac=prop.table(n), year=2010)
 names(kidGroup10) <- n1
 
 kidGroup09 <- sotc09 %>% 
-  filter(children == "Yes" | children == "No", is.na(families_kids) == FALSE) %>% 
+  filter(children == "Yes" | children == "No", !is.na(families_kids)) %>% 
   group_by(citystate, children, families_kids) %>% 
   summarise(n = n()) %>% 
   mutate(frac=prop.table(n), year=2009)
@@ -913,7 +919,7 @@ kidGroups <- LikertData(positive, negative, neutral, kidGroup09)
 kidGroups$neg$Response <- factor(kidGroups$neg$Response, levels=levels(kidGroups$neg$Response)[c(2,3,1)])
 
 kidGroup08 <- sotc08 %>% 
-  filter(children == "Yes" | children == "No", is.na(families_kids) == FALSE & families_kids != "(DK)" & families_kids != "(Refused)") %>% 
+  filter(children == "Yes" | children == "No", !is.na(families_kids) & families_kids != "(DK)" & families_kids != "(Refused)") %>% 
   group_by(citystate, children, families_kids) %>% 
   summarise(n = n()) %>% 
   mutate(frac=prop.table(n), year=2008)
