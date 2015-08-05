@@ -47,7 +47,7 @@ While the Gallup Poll analysis is interesting, it does raise the question of mul
 require(knitr)
 @ 
 <<chunkoptions, echo=FALSE, include=FALSE>>=
-opts_chunk$set(echo=FALSE, cache=TRUE, message=FALSE, warning=FALSE, error=FALSE, fig.align='center')
+opts_chunk$set(echo=FALSE, cache=FALSE, message=FALSE, warning=FALSE, error=FALSE, fig.align='center')
 require(dplyr)
 require(ggplot2)
 require(scales)
@@ -385,52 +385,64 @@ baseplot
 @
 
 <<YN2010>>=
-dfall <- data.frame()
-for (i in 1:length(twolevel)){
-  tmp <- data.frame(Question=twolevel[i], prop.table(table(sotc10[,twolevel[i]])))
-  dfall <- rbind(dfall, tmp)
-}
-names(dfall) <- c("Question", "Response", "Freq")
+dfcities10 <- sotc10 %>%
+  select(citystate, one_of(twolevel)) %>%
+  mutate(id = 1:n()) %>%
+  group_by(citystate) %>%
+  tidyr::gather("Question", "Response", -id, -citystate) %>%
+  group_by(citystate, Question, Response) %>%
+  filter(!is.na(Response)) %>%
+  summarise(n = n()) %>%
+  mutate(Freq = n/sum(n)) %>%
+  filter(Response=="Yes") %>%
+  merge(select(filter(df10, Response=="Yes"), Freq), by="Question") %>%
+  mutate(diff=Freq.y-Freq.x) %>%
+  select(-Freq.y, -n, Freq=Freq.x) %>%
+  arrange(citystate) %>%
+  mutate(year="2010")
 
-citystateResp <- function(dataset){
-  # Create a loop that calculates the percentages of cases in each factor level for each city
-  dfcities <- data.frame()
-  questionsIn <- which(twolevel %in% names(dataset))
-  for (j in 1:length(levels(dataset$citystate))){
-    thiscity <- subset(dataset, citystate==levels(dataset$citystate)[j])
-    for (i in questionsIn){
-      tmp <- data.frame(levels(dataset$citystate)[j], Question=twolevel[i], prop.table(table(thiscity[,twolevel[i]])))
-      dfcities <- rbind(dfcities, tmp)
-    }
-  }
-  names(dfcities) <- c("citystate", "Question", "Response", "Freq")
+dfcitiesYes <- dfcities10 %>%
+  filter(Response=="Yes") %>%
+  mutate(col = diff>0)
 
-  # Now we calculate difference between the overall and the cities to see where the variation comes from
-  dfcities$diff <- 0
-  for (i in 1:length(levels(dfcities$Question))){
-    # Yes
-    overallrate <- dfall[dfall$Question==levels(dfall$Question)[i] & dfall$Response=="Yes",]$Freq
-    dfcities$diff[(dfcities$Question==levels(dfcities$Question)[i]& dfcities$Response=="Yes")] <- (overallrate - dfcities[(dfcities$Question==levels(dfcities$Question)[i] & dfcities$Response=="Yes"),]$Freq)/overallrate
-  }
-  return(dfcities)
-}
-
-
-dfcities10 <- citystateResp(sotc10)
-dfcitiesYes <- dfcities10[dfcities10$Response=="Yes",]
-dfcitiesYes$col <- dfcitiesYes$dif>0
 dfcitiesYes$Question <- factor(dfcitiesYes$Question, levels=levels(dfcitiesYes$Question)[order(dfall[dfall$Response=="Yes",]$Freq)])
 @
 
 <<startingoverall>>=
-dfcities09 <- citystateResp(sotc09) %>% 
+dfcities09 <- sotc09 %>%
+  select(citystate, one_of(twolevel[1:5])) %>%
+  mutate(id = 1:n()) %>%
+  group_by(citystate) %>%
+  tidyr::gather("Question", "Response", -id, -citystate) %>%
+  group_by(citystate, Question, Response) %>%
+  filter(!is.na(Response)) %>%
+  summarise(n = n()) %>%
+  mutate(Freq = n/sum(n)) %>%
+  filter(Response=="Yes") %>%
+  merge(select(filter(df10, Response=="Yes"), Freq), by="Question") %>%
+  mutate(diff=Freq.y-Freq.x) %>%
+  select(-Freq.y, -n, Freq=Freq.x) %>%
+  arrange(citystate) %>%
   mutate(year="2009")
-dfcities08 <- citystateResp(sotc08) %>% 
+
+dfcities08 <- sotc08 %>%
+  select(citystate, one_of(twolevel[1:5])) %>%
+  mutate(id = 1:n()) %>%
+  group_by(citystate) %>%
+  tidyr::gather("Question", "Response", -id, -citystate) %>%
+  group_by(citystate, Question, Response) %>%
+  filter(!is.na(Response)) %>%
+  summarise(n = n()) %>%
+  mutate(Freq = n/sum(n)) %>%
+  filter(Response=="Yes") %>%
+  merge(select(filter(df10, Response=="Yes"), Freq), by="Question") %>%
+  mutate(diff=Freq.y-Freq.x) %>%
+  select(-Freq.y, -n, Freq=Freq.x) %>%
+  arrange(citystate) %>%
   mutate(year="2008")
-dfcities10 <- dfcities10 %>% 
-  mutate(year="2010")
+
+
 md1 <-rbind(dfcities10, dfcities09, dfcities08) %>% 
-  filter(Response=="Yes") %>% 
   select(-Response, -diff) %>% 
   filter(Question %in% c("registered_vote", "voted_local", "volunteer", "worked_change", "public_meeting"))
 md1 <- melt(md1)
