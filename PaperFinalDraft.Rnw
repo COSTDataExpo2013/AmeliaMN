@@ -47,7 +47,7 @@ While the Gallup Poll analysis is interesting, it does raise the question of mul
 require(knitr)
 @ 
 <<chunkoptions, echo=FALSE, include=FALSE>>=
-opts_chunk$set(echo=FALSE, cache=FALSE, message=FALSE, warning=FALSE, error=FALSE, fig.align='center')
+opts_chunk$set(echo=FALSE, cache=TRUE, message=FALSE, warning=FALSE, error=FALSE, fig.align='center')
 require(dplyr)
 require(ggplot2)
 require(scales)
@@ -194,8 +194,8 @@ resp
 While the Gallup reports claim the telephone surveys only took 15 minutes, the number of variables collected and the wide range of response scales seems to indicate a much larger time commitment. This raises the question of whether everyone who began the survey completed it. And, as mentioned in Section \ref{maprates}, the 2010 data contained many more observations than previous years. The explanation for this difference is missing data, presumably related to surveys that were not fully completed. 
 
 <<missingmatch>>=
-matchup1 <- length(which(which(is.na(sotc10$recommend)) %in% which(is.na(sotc10$college))))
-matchup2 <- length(which(which(is.na(sotc10$college)) %in% which(is.na(sotc10$registered_vote))))
+matchup1 <- sum(is.na(sotc10$recommend) & is.na(sotc10$college))
+matchup2 <- sum(is.na(sotc10$college) & is.na(sotc10$registered_vote))
 @
 
 In order to explore this, we study the pattern of missing data within the 2010 data set. This data set includes a large number of responses that are extremely sparse, containing almost no completed survey questions, but generally completed demographic information. For example, the question ``How likely are you to recommend this community to a friend or associate as a place to live?'' has \Sexpr{sum(is.na(sotc10$recommend)==TRUE)} missing values, and the question ``The overall quality of the colleges and universities'' has \Sexpr{sum(is.na(sotc10$college)==TRUE)} missing values. Just between those two questions, the overlap of missing values for both questions is \Sexpr{matchup1}. In other words, almost all the entries that are missing a response to the question about recommending the community are also missing a response to the question about colleges. Similarly, there are \Sexpr{matchup2} respondents missing both the question about colleges and the question ``Are you registered to vote?''
@@ -210,8 +210,8 @@ Interestingly, with the incomplete responses removed, the 2010 data set is reduc
 count_na <- function(x) sum(is.na(x))
 missing10 <- count_na(sotc10$recommend)
 missing09 <- count_na(sotc09$recommend)
-missing08 <- count_na(sotc08$recommend)
-missing <- c(missing08, missing09, missing10)
+missing08 <- group_by(sotc08, recommend == "(Refused)") %>% summarise(n = n()) 
+missing <- c(missing08$n[2], missing09, missing10)
 missingtable <- as.matrix(data.frame(Year=c(2008, 2009, 2010), Missing=missing, Total=c(dim(sotc08)[1], dim(sotc09)[1], dim(sotc10)[1]), Percent=missing/c(dim(sotc08)[1], dim(sotc09)[1], dim(sotc10)[1])*100))
 rownames(missingtable) <- NULL
 print(xtable(x=missingtable,caption="Percent of missing data from surveys. The 2010 survey has almost 25 percent missing data. The total number of entries in 2010 is also much larger, suggesting that the 2008 and 2009 datasets used a different criteria for inclusion of entries.", display=c("d", "d", "d","d", "f"), label="missingtable"),include.rownames=FALSE)
