@@ -14,9 +14,10 @@
 
 \author{Amelia McNamara}
 \institute{A. McNamara \at
-              8125 Math Sciences Bldg. \\
-              Los Angeles, CA 90095-1554 \\
-              \email{amelia.mcnamara@stat.ucla.edu}
+              Burton 215 \\
+              Smith College
+              Northampton, MA 01063 \\
+              \email{amcnamara@smith.edu}
 }
 
 \date{Received: date / Accepted: date}
