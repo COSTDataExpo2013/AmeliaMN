@@ -207,10 +207,11 @@ In order to be consistent, we have considered data missing in 2008 and 2009 if t
 Interestingly, with the incomplete responses removed, the 2010 data set is reduced to ~15,000 observations, which is much closer to the ~14,000 observations the two prior years. This suggests that incomplete responses were removed in previous years, or that some new survey methodology (i.e. a ``short form'') was introduced in 2010. 
 
 <<missingdatatable, results="asis">>=
-missing10 <- group_by(sotc10, recommend == "NA") %>% summarise(n = n()) 
-missing09 <- group_by(sotc09, recommend == "NA") %>% summarise(n = n()) 
-missing08 <- group_by(sotc08, recommend == "(Refused)") %>% summarise(n = n()) 
-missing <- c(missing08$n[2], missing09$n[2], missing10$n[2])
+count_na <- function(x) sum(is.na(x))
+missing10 <- count_na(sotc10$recommend)
+missing09 <- count_na(sotc09$recommend)
+missing08 <- count_na(sotc08$recommend)
+missing <- c(missing08, missing09, missing10)
 missingtable <- as.matrix(data.frame(Year=c(2008, 2009, 2010), Missing=missing, Total=c(dim(sotc08)[1], dim(sotc09)[1], dim(sotc10)[1]), Percent=missing/c(dim(sotc08)[1], dim(sotc09)[1], dim(sotc10)[1])*100))
 rownames(missingtable) <- NULL
 print(xtable(x=missingtable,caption="Percent of missing data from surveys. The 2010 survey has almost 25 percent missing data. The total number of entries in 2010 is also much larger, suggesting that the 2008 and 2009 datasets used a different criteria for inclusion of entries.", display=c("d", "d", "d","d", "f"), label="missingtable"),include.rownames=FALSE)
@@ -658,11 +659,11 @@ The correlation suggests a positive relationship between the variables, but it's
 \label{mseniors}
 
 <<OverallSeniors>>=
-seniorGroup10 <- filter(sotc10, seniors != "NA") %>% group_by(citystate, age >= 62, seniors) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2010)
+seniorGroup10 <- filter(sotc10, is.na(seniors) == FALSE) %>% group_by(citystate, age >= 62, seniors) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2010)
 
 names(seniorGroup10) <- n1
 
-seniorGroup09 <- filter(sotc09, age != "NA") %>% group_by(citystate, age >= 62, seniors) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2009)
+seniorGroup09 <- filter(sotc09, is.na(age) == FALSE) %>% group_by(citystate, age >= 62, seniors) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2009)
 names(seniorGroup09) <- n1
 
 seniorGroup08 <- group_by(sotc08, citystate, age >=62, seniors) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2008)
@@ -806,16 +807,16 @@ Then, the question becomes whether the $MK_S$ score is correlated with community
 The last subgroup to study in this exploration is families with young children. For this section, we split participants between those who reported having dependent children under the age of 18 living in their household and those who did not. Intuitively, it makes sense that a parent of an older child (say, a teenager) would have higher meta-knowledge about the community as a place for families with young children than a participant who never had children or whose children have grown up and moved away. While the data included more granular demographic details about the ages of the children in the households, splitting the data into participants with children and those without made the groups closer in size. To see the sample sizes and percentages, see Figure \ref{fig:kidsSS}. 
 
 <<kidsbyYear>>=
-kidGroup10 <- filter(sotc10, children == "Yes" | children == "No", families_kids != "NA") %>% group_by(citystate, children, families_kids) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2010)
+kidGroup10 <- filter(sotc10, children == "Yes" | children == "No", is.na(families_kids) == FALSE) %>% group_by(citystate, children, families_kids) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2010)
 names(kidGroup10) <- n1
 
-kidGroup09 <- filter(sotc09, children == "Yes" | children == "No", families_kids != "NA") %>% group_by(citystate, children, families_kids) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2009)
+kidGroup09 <- filter(sotc09, children == "Yes" | children == "No", is.na(families_kids) == FALSE) %>% group_by(citystate, children, families_kids) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2009)
 names(kidGroup09) <- n1
 
 kidGroups <- LikertData(positive, negative, neutral, kidGroup09)
 kidGroups$neg$Response <- factor(kidGroups$neg$Response, levels=levels(kidGroups$neg$Response)[c(2,3,1)])
 
-kidGroup08 <- filter(sotc08, children == "Yes" | children == "No", families_kids != "NA" & families_kids != "(DK)" & families_kids != "(Refused)") %>% group_by(citystate, children, families_kids) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2008)
+kidGroup08 <- filter(sotc08, children == "Yes" | children == "No", is.na(families_kids) == FALSE & families_kids != "(DK)" & families_kids != "(Refused)") %>% group_by(citystate, children, families_kids) %>% summarise(n = n()) %>% mutate(frac=prop.table(n), year=2008)
 names(kidGroup08) <- n1
 
 kidYears <- rbind(kidGroup08, kidGroup09, kidGroup10)
