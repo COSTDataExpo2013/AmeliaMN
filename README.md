@@ -6,5 +6,5 @@ This repository contains supplementary material for the paper "Community engagem
 - **CodeFinalDraft.R** is an R file that contains all the code from the paper, extracted from the .Rnw file using purl().
 - Original Knight Foundation data files are in the **data** directory, along with supplemental data
 - R packages are archived in the **packrat** directory
-- The LaTeX style file from Taylor and Francis is the file named **svjour3.cls**
+- The LaTeX style file from Taylor and Francis is the file named **svjour3.cls** and the BibTeX bibliography is **SoCbib.bib**
 
