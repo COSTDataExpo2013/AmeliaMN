@@ -12,12 +12,12 @@
 
 \titlerunning{Community engagement and subgroup meta-knowledge}        % if too long for running head
 
-\author{Amelia McNamara}
+\author{Amelia A McNamara}
 \institute{A. McNamara \at
-              Burton 215 \\
-              Smith College
-              Northampton, MA 01063 \\
-              \email{amcnamara@smith.edu}
+              OSS 407 \\
+              University of St Thomas
+              St Paul, MN 55105 \\
+              \email{amelia.mcnamara@stthomas.edu}
 }
 
 \date{Received: date / Accepted: date}
