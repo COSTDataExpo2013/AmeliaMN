@@ -14,9 +14,8 @@
 
 \author{Amelia A McNamara}
 \institute{A. McNamara \at
-              OSS 407 \\
-              University of St Thomas
-              St Paul, MN 55105 \\
+              University of California, Los Angeles \\
+              Los Angeles, CA 90095 \\
               \email{amelia.mcnamara@stthomas.edu}
 }
 
@@ -33,7 +32,9 @@
 \label{intro}
 Studies have shown that increasing empathy is the best way to improve intergroup relations \citep{SteFin1999}. Therefore, it is of interest to quantify the typical level of empathy in communities across the United States. The Knight Foundation data provides a window to a factor which could be thought of as a proxy for empathy, namely community meta-knowledge. We are defining meta-knowledge as community awareness by those outside a specific subgroup about the conditions for people inside the subgroup. The primary attempt of this article is to answer the question ``Are people outside a specific subgroup aware of the quality of their community for people in that subgroup?" and then, ``do communities with high meta-knowledge (those where people outside the subgroup understood conditions for minorities) have higher community satisfaction rates than those with low meta-knowledge?"
 
-This article is one of several related to the Knight Foundation community data from the 2013 American Statistical Association Data Expo. For more information on the Expo and the data sets, see \citep{Hof2019}. This article is fully-reproducble, with all code necessary to generate the paper available on GitHub~\citep{McN2019}. In the GitHub repository, you will find the underlying data, the LaTeX/knitr file which produces the paper including R code, a packrat archive of the necessary R packages, and LaTeX style files to create the specific journal style. 
+This article is one of several related to the Knight Foundation community data from the 2013 American Statistical Association Data Expo. For more information on the Expo and the data sets, see \citep{Hof2019}. This article is fully reproducble. The paper was written using \LaTeX\, and R~\citep{R2014}. The R package knitr was used to interweve writing and R code~\citep{Xie2014}. If you inspect the source code, available on Github~\citep{McN2019}, you will find that each of the figures in the paper are generated when the document is compiled (``knit''). Likewise, any statistic mentioned in the text is calculated using R and automatically inserted into the text using knitr.  All graphics were generated with the package ggplot2, an R implementation of The Grammar of Graphics~\citep{Wic2009, Wil2005}. The paper was written in the time period between the development of the R package plyr~\citep{Wic2011} and the R package dplyr, which superceded it~\citep{WicFra2015}. Therefore, it uses functions from both packages. One challenge with reproducibility is that as packages develop, they are not always backwards-compatible. To help combat this issue, the code available on Github includes a packrat library. The packrat package allows a user to snapshot the state of their packages in order to freeze them for future reproducibility~\citep{UshMcP2014}. For example, although the current version of dplyr is 0.7.8, this paper uses version 0.4.1. In order to run the code hosted on Github, you will need to ``hydrate'' the library of packages using packrat. The Github repository contains the underlying data, the LaTeX/knitr file which produces the paper (including R code), a packrat archive of the necessary R packages, and LaTeX style files to create the specific journal style. 
+
+The remainder of this paper is an exploration of the idea of community meta-knowledge. It begins with discussion of the data in Section \ref{data}, then moves to focus on community satisfaction in Section \ref{communittsatsec}, and community engagement through local behaviors in Section \ref{behaviorsec}. Finally, it discusses meta-knowledge in Section \ref{metasec} and wraps up with conclusions in Section \ref{conclusion}.
 
 \section{The Data}
 \label{data}
@@ -366,8 +367,8 @@ baseplot <- ggplot(mapping = aes(Question, Freq, fill = Response)) +
   geom_bar(data = trial1$neg, stat = "identity") + 
   geom_bar(data = trial1$pos, stat = "identity") + 
   scale_y_continuous(
-    breaks=seq(from=-0.75, to=0.75, by=0.25), 
-    labels=percent
+    breaks=seq(from=-0.75, to=0.75, length.out = 7), 
+    labels=c("", "-50%", "", "0","",  "50%", "")
     ) + 
   coord_flip()+ 
   xlab("") + 
@@ -452,7 +453,7 @@ md1$year <- as.numeric(md1$year)
 masterData <- left_join(masterData, md1)
 @
 
-<<YN2010plot, out.width="0.99\\linewidth",fig.width = 10, fig.height=18, fig.cap="Percentage difference from overall survey rates (2010 data). The letters A-J represent the activities listed in Figure \\ref{fig:YNall}. A: Registered to vote, B: Voted in a local election, C: Donated money to a local organization, D: Attended a local event, E: Gave money or food to an individual, F: Participated in a church event, G: Performed local volunteer work, H: Worked with other residents to make change, I: Attended a local public meeting, J: Provided free shelter to an individual.">>=
+<<YN2010plot, out.width="0.99\\linewidth",fig.width = 10, fig.height=18, fig.cap="Difference from overall survey rates (2010 data). The letters A-J represent the activities listed in Figure \\ref{fig:YNall}. A: Registered to vote, B: Voted in a local election, C: Donated money to a local organization, D: Attended a local event, E: Gave money or food to an individual, F: Participated in a church event, G: Performed local volunteer work, H: Worked with other residents to make change, I: Attended a local public meeting, J: Provided free shelter to an individual.">>=
 baseplot <- ggplot(dfcitiesYes) + 
   aes(Question, diff, fill = col) + 
   facet_wrap(~citystate, ncol=3) + 
@@ -460,8 +461,8 @@ baseplot <- ggplot(dfcitiesYes) +
   coord_flip() + 
   guides(fill=FALSE) + 
   scale_y_continuous(
-    breaks=seq(from=-.5, to=.5, by=.125),
-    labels=c("50%","", "25%","", "0","", "25%","", "50%")
+    breaks=seq(from=-.15, to=.15, length.out = 5),
+    labels=c("", "-7.5%", "0","+7.5%",  "")
     ) +
   scale_x_discrete(labels=LETTERS[10:1]) + 
   ylab("") + 
@@ -469,7 +470,7 @@ baseplot <- ggplot(dfcitiesYes) +
   theme(
     axis.text.y=element_text(size=12), 
     title=element_text(size=18), 
-    axis.text.x=element_text(size=14), 
+    axis.text.x=element_text(size=11), 
     strip.text=element_text(size=16))
 baseplot
 @
@@ -1087,7 +1088,8 @@ cp <- ggplot(data=melted, aes(x=Var1, y=Var2, fill=value)) +
   xlab("") + 
   ylab("") + 
   theme(axis.text.x=element_text(angle=-90, hjust=0)) + 
-  coord_flip()
+  coord_flip() +
+  coord_fixed()
 cp
 @
 
@@ -1098,6 +1100,7 @@ There are also relationships between community engagement behaviors (for example
 These correlations suggest avenues for further study. 
 
 \section{Conclusions and Further Work}
+\label{conclusion}
 Through this exploration of the Knight Foundation's Soul of the Community data, we have been able to examine variability between communities and theorize about what might affect those variations. In Section \ref{communittsatsec} we saw which communities reported the highest levels of community satisfaction, namely State College, PA and Boulder, CO. In Section \ref{behaviorsec}, we explored the common behaviors that survey participants engaged in, including registering to vote and voting in local elections. We noticed that college towns tend to have higher than typical rates of providing shelter to a non-relative (the couchsurfing effect?).
 
 Then, in Section \ref{metasec} we began to explore community meta-knowledge, or how aware survey participants are about their community as a place for minority groups. We explored meta-knowledge about how good a community is for racial and ethnic minorities, finding that there is a lot of variation between communities in whether minorities under- or over-rate their communities as a place for minorities, as compared to White respondents. There was some correlation between scores given by respondents in- and out-side the subgroup of racial and ethnic minorities, but not as strong as with the other facets of meta-knowledge. 

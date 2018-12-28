@@ -12,5 +12,6 @@ Please note, while this entire repository is reproducible, the code was initiall
 
 - clone or download this repo to your local machine
 - open the .Rproj
+- ``install.packages("packrat")``
 - hydrate the packrat repository by running ``packrat::restore()``
 - knit the ``Rnw`` file
