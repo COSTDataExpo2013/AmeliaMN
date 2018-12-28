@@ -33,7 +33,7 @@
 \label{intro}
 Studies have shown that increasing empathy is the best way to improve intergroup relations \citep{SteFin1999}. Therefore, it is of interest to quantify the typical level of empathy in communities across the United States. The Knight Foundation data provides a window to a factor which could be thought of as a proxy for empathy, namely community meta-knowledge. We are defining meta-knowledge as community awareness by those outside a specific subgroup about the conditions for people inside the subgroup. The primary attempt of this article is to answer the question ``Are people outside a specific subgroup aware of the quality of their community for people in that subgroup?" and then, ``do communities with high meta-knowledge (those where people outside the subgroup understood conditions for minorities) have higher community satisfaction rates than those with low meta-knowledge?"
 
-This article is one of several related to the Knight Foundation community data from the 2013 Data Expo. For more information on the Expo and the data sets, see \citep{Hof2019}.
+This article is one of several related to the Knight Foundation community data from the 2013 American Statistical Association Data Expo. For more information on the Expo and the data sets, see \citep{Hof2019}. This article is fully-reproducble, with all code necessary to generate the paper available on GitHub~\citep{McN2019}. In the GitHub repository, you will find the underlying data, the LaTeX/knitr file which produces the paper including R code, a packrat archive of the necessary R packages, and LaTeX style files to create the specific journal style. 
 
 \section{The Data}
 \label{data}
