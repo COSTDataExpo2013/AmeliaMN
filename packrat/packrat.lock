@@ -50,12 +50,6 @@ Version: 0.5.5
 Hash: 20881970e590ee68de97a468694db7b0
 Requires: stringr
 
-Package: flexmix
-Source: CRAN
-Version: 2.3-13
-Hash: cd988150c00a7f4c77154258ec342ffd
-Requires: modeltools
-
 Package: formatR
 Source: CRAN
 Version: 1.0
@@ -137,17 +131,6 @@ Source: CRAN
 Version: 0.2
 Hash: 9179db921fcb2e5be44e217042ed06bc
 
-Package: minqa
-Source: CRAN
-Version: 1.2.4
-Hash: c296d9310e771765d613acb3d704633c
-Requires: Rcpp
-
-Package: modeltools
-Source: CRAN
-Version: 0.2-21
-Hash: cf8ddb5ff06dedec20776365da8e288a
-
 Package: munsell
 Source: CRAN
 Version: 0.4.2
@@ -184,11 +167,6 @@ Package: RColorBrewer
 Source: CRAN
 Version: 1.0-5
 Hash: 6a849b729bec970204ca88b96906adbc
-
-Package: Rcpp
-Source: CRAN
-Version: 0.11.3
-Hash: ef2b1a5e45d1461bd720e4ebbe48e601
 
 Package: reshape2
 Source: CRAN
@@ -249,3 +227,8 @@ Package: maps
 Source: CRAN
 Version: 2.3-7
 Hash: 4c87e5e328a6125cbe661dff2189c864
+
+Package: Rcpp
+Source: CRAN
+Version: 0.11.3
+Hash: ef2b1a5e45d1461bd720e4ebbe48e601
