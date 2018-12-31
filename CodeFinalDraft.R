@@ -10,6 +10,7 @@ require(RColorBrewer)
 require(ggmap)
 require(xtable)
 require(reshape2)
+require(forcats)
 
 ## ----readdata------------------------------------------------------------
 sotc10 <- read.csv("data/sotc10.csv")
@@ -59,7 +60,8 @@ FeelingsC <- function(dataset){
     summarise(percents= sum(Freq))
   Feelings <- data.frame(Feelings)
   newDF <- data.frame(InGroup=NA, OutGroup=NA, citystate=levels(Feelings$citystate))
-  newDF$ratio <- (Feelings[Feelings$InGroup=="FALSE" | Feelings$InGroup=="No",]$percents) - (Feelings[Feelings$InGroup=="TRUE" | Feelings$InGroup=="Yes",]$percents)
+  # just changed, because subtraction was in the wrong direction...
+  newDF$ratio <- (Feelings[Feelings$InGroup=="TRUE" | Feelings$InGroup=="No",]$percents) - (Feelings[Feelings$InGroup=="FALSE" | Feelings$InGroup=="Yes",]$percents)
   newDF$InGroup <- Feelings[Feelings$InGroup=="TRUE" | Feelings$InGroup=="Yes",]$percents
   newDF$OutGroup <- Feelings[Feelings$InGroup=="FALSE" | Feelings$InGroup=="No",]$percents
   return(newDF)
@@ -76,7 +78,13 @@ popData <- data.frame(year=c(rep(2010, 26), rep(2009, 26), rep(2008, 26)), perce
 popData$percent <- popData$percent*100
 popData$citystate <- c(rep(levels(sotc10$citystate),3))
 
-## ----surveyrates, fig.align="left", fig.cap="Yearly survey percentages, displayed on a log scale. Notice that some communities are always over-surveyed (for example, Palm Beach, FL) and some always appear under-surveyed (for example, Long Beach, CA). Population data compiled by the Census Bureau for Intercensal population estimates", out.width="0.99\\linewidth",fig.width = 9.5,fig.height=7.5----
+## ----surveyrates, fig.align="left", fig.cap="Yearly survey percentages, displayed on a log scale. Communityies are ordered by median survey rate. Notice that some communities are always over-surveyed (for example, Palm Beach, FL) and some always appear under-surveyed (for example, Long Beach, CA). Population data compiled by the Census Bureau for Intercensal population estimates", out.width="0.99\\linewidth",fig.width = 9.5,fig.height=7.5----
+
+popData <- popData %>%
+  group_by(citystate) %>%
+  mutate(medianpercent = median(percent)) %>%
+  ungroup() %>%
+  mutate(citystate = fct_reorder(citystate, desc(medianpercent)))
 
 p <- ggplot(aes(x=year, y=percent), data=popData) + 
   facet_wrap(~citystate, ncol=5) + 
@@ -192,7 +200,7 @@ brandetonsat <- tbl_df(posform) %>%
   group_by(year) %>% 
   summarise(totalper=sum(Freq))
 
-## ----communitysatplot, fig.cap="Responses to the question, \`\`Taking everything into account, how satisified are you with this community as a place to live?\" Communities are ordered by percentage of positive responses in 2008, making it clear the differences in distribution in 2009 and 2010.", out.width="0.99\\linewidth",fig.width = 9.5,fig.height=15----
+## ----communitysatplot, fig.cap="Responses to the question, \`\`Taking everything into account, how satisified are you with this community as a place to live?\" Communities are ordered by percentage of positive responses in 2008, making it clear the differences in distribution in 2009 and 2010.", out.width="0.99\\linewidth",fig.width = 9.5,fig.height=15,----
 baseplot <- ggplot(mapping = aes(x=citystate, y=Freq, fill = Response, order=Response)) + 
   facet_wrap(~year, nrow=3) + 
   geom_bar(data = trial2$neg, stat = "identity") + 
@@ -264,8 +272,8 @@ baseplot <- ggplot(mapping = aes(Question, Freq, fill = Response)) +
   geom_bar(data = trial1$neg, stat = "identity") + 
   geom_bar(data = trial1$pos, stat = "identity") + 
   scale_y_continuous(
-    breaks=seq(from=-0.75, to=0.75, by=0.25), 
-    labels=percent
+    breaks=seq(from=-0.75, to=0.75, length.out = 7), 
+    labels=c("", "-50%", "", "0","",  "50%", "")
     ) + 
   coord_flip()+ 
   xlab("") + 
@@ -294,7 +302,7 @@ dfcities10 <- sotc10 %>%
   mutate(Freq = n/sum(n)) %>%
   filter(Response=="Yes") %>%
   merge(select(filter(df10, Response=="Yes"), Freq), by="Question") %>%
-  mutate(diff=Freq.y-Freq.x) %>%
+  mutate(diff=Freq.x-Freq.y) %>%
   select(-Freq.y, -n, Freq=Freq.x) %>%
   arrange(citystate) %>%
   mutate(year="2010")
@@ -347,7 +355,7 @@ md1 <- dcast(md1, citystate + year ~ Question, mean)
 md1$year <- as.numeric(md1$year)
 masterData <- left_join(masterData, md1)
 
-## ----YN2010plot, out.width="0.99\\linewidth",fig.width = 10, fig.height=18, fig.cap="Percentage difference from overall survey rates (2010 data). The letters A-J represent the activities listed in Figure \\ref{fig:YNall}. A: Registered to vote, B: Voted in a local election, C: Donated money to a local organization, D: Attended a local event, E: Gave money or food to an individual, F: Participated in a church event, G: Performed local volunteer work, H: Worked with other residents to make change, I: Attended a local public meeting, J: Provided free shelter to an individual."----
+## ----YN2010plot, out.width="0.99\\linewidth",fig.width = 10, fig.height=18, fig.cap="Percentage-point difference from overall survey rates (2010 data). The letters A-J represent the activities listed in Figure \\ref{fig:YNall}. A: Registered to vote, B: Voted in a local election, C: Donated money to a local organization, D: Attended a local event, E: Gave money or food to an individual, F: Participated in a church event, G: Performed local volunteer work, H: Worked with other residents to make change, I: Attended a local public meeting, J: Provided free shelter to an individual."----
 baseplot <- ggplot(dfcitiesYes) + 
   aes(Question, diff, fill = col) + 
   facet_wrap(~citystate, ncol=3) + 
@@ -355,8 +363,8 @@ baseplot <- ggplot(dfcitiesYes) +
   coord_flip() + 
   guides(fill=FALSE) + 
   scale_y_continuous(
-    breaks=seq(from=-.5, to=.5, by=.125),
-    labels=c("50%","", "25%","", "0","", "25%","", "50%")
+    breaks=seq(from=-.15, to=.15, length.out = 5),
+    labels=c("", "-7.5", "0","+7.5",  "")
     ) +
   scale_x_discrete(labels=LETTERS[10:1]) + 
   ylab("") + 
@@ -364,7 +372,7 @@ baseplot <- ggplot(dfcitiesYes) +
   theme(
     axis.text.y=element_text(size=12), 
     title=element_text(size=18), 
-    axis.text.x=element_text(size=14), 
+    axis.text.x=element_text(size=11), 
     strip.text=element_text(size=16))
 baseplot
 
@@ -501,11 +509,15 @@ minGroups08$neg$Response <- factor(minGroups08$neg$Response, levels=levels(minGr
 minGroups09 <- LikertData(positive, negative, neutral, minoritiesYN09)
 minGroups09$neg$Response <- factor(minGroups09$neg$Response, levels=levels(minGroups09$neg$Response)[c(2,3,1)])
 
-## ----allMinorities,out.width="0.99\\linewidth",fig.width = 10.5, fig.height=12.5, fig.cap="Responses to the question, \`\`How is your community as a place for racial and ethnic minorities?\" faceted by community (2009 data)."----
-baseplot <- ggplot(mapping = aes(InGroup, Freq, fill = Response, order=Response)) + 
+totalMin09 <- minoritiesYN09 %>%
+  group_by(citystate, InGroup) %>%
+  summarize(totalN = sum(n))
+
+## ----allMinorities,out.width="0.99\\linewidth",fig.width = 10.5, fig.height=12.5, fig.cap="Responses to the question, \`\`How is your community as a place for racial and ethnic minorities?\" faceted by community (2009 data). Numbers in parentheses indicate sample sizes."----
+baseplot <- ggplot() + 
   facet_wrap(~citystate, ncol=3) + 
-  geom_bar(data = minGroups09$neg, stat = "identity") + 
-  geom_bar(data = minGroups09$pos, stat = "identity") + 
+  geom_bar(mapping = aes(InGroup, Freq, fill = Response, order=Response), data = minGroups09$neg, stat = "identity") + 
+  geom_bar(mapping = aes(InGroup, Freq, fill = Response, order=Response), data = minGroups09$pos, stat = "identity") + 
   scale_fill_manual(
     values=colorsA, 
     breaks=c("Very bad", "2", "3", "4", "Very good"),
@@ -514,7 +526,7 @@ baseplot <- ggplot(mapping = aes(InGroup, Freq, fill = Response, order=Response)
   coord_flip() +
 #TRUE means minorities, in Aberdeen they are under-rating
   scale_y_continuous(
-    breaks=seq(from=-0.25, to=0.75, by=0.25), 
+    breaks=seq(from=-0.5, to=0.75, by=0.25), 
     labels=percent
     ) + 
   scale_x_discrete(labels=c("White", "Non-white")) + 
@@ -525,8 +537,10 @@ baseplot <- ggplot(mapping = aes(InGroup, Freq, fill = Response, order=Response)
     legend.title=element_text(size=16), 
     axis.text.y=element_text(size=16), 
     title=element_text(size=16), 
-    axis.text.x=element_text(size=14), 
-    strip.text=element_text(size=14))
+    axis.text.x=element_text(size=11), 
+    strip.text=element_text(size=14)) +
+  geom_text(data=totalMin09, aes(label=paste0("(",totalN, ")"), x=InGroup, y=1.1), size=3, hjust=1) +
+  expand_limits(y=1) 
 
 baseplot 
 
@@ -546,16 +560,22 @@ masterData <- left_join(masterData, newDF)
 horiz <- mean(newDF09$white)
 vert <- mean(newDF09$nonwhite)
 
-## ----anotherlookplot, out.width="0.76\\linewidth", fig.cap=paste0("Relationship between positive responses to the question, \`\`How is your community as a place for minorities?\" comparing ratings of Whites and Non-whites. Each community is represented, and the plot uses 2009 data. Some communities, like State College, PA, are under-rated by Whites, some are over-rated, like Grand Forks, ND, and some are rated the same by both groups, like Gary, IN. The black line shows y=x, for comparison. Grey lines at x=", round(vert, digits=2), " and y=", round(horiz, digits=2), " show the mean ratings by each group.")----
+## ----anotherlookplot, out.width="0.76\\linewidth", fig.cap=paste0("Relationship between positive responses to the question, \`\`How is your community as a place for minorities?\" comparing ratings of Whites and Non-whites. Each community is represented, and the plot uses 2009 data. The darker grey region corresponds to positive meta-knowledge scores. Some communities, like State College, PA, are under-rated by Whites, some are over-rated, like Grand Forks, ND, and some are rated the same by both groups, like Gary, IN. The black line shows y=x, for comparison. Grey lines at x=", round(vert, digits=2), " and y=", round(horiz, digits=2), " show the mean ratings by each group.")----
+df_poly <- data.frame(
+    x=c(-Inf, Inf, Inf),
+    y=c(-Inf, Inf, -Inf)
+)
+
 al <- ggplot(newDF09) + 
+  geom_polygon(data=df_poly, aes(x, y), fill="grey", alpha=0.6) +
   geom_vline(aes(xintercept=vert), color="grey") + 
   geom_hline(aes(yintercept=horiz), color="grey") + 
   geom_abline(intercept=0, slope=1) + 
   geom_point(aes(y=white, x=nonwhite)) + 
   geom_text(
     data = newDF09[newDF09$citystate %in% c("Duluth, MN", "Gary, IN", "Grand Forks, ND", "State College, PA"),],
-    aes(y=white, x=nonwhite, label = citystate), 
-    vjust=c(-0.6, -0.4, 1.3, -0.6), 
+    aes(y=white, x=nonwhite, label = paste(citystate, "\nMK =", round(1/racediffs))), 
+    vjust=c(-0.4, 1.1, 1.3, -0.4), 
     hjust=0, 
     size=4
     ) + 
@@ -566,7 +586,7 @@ al <- ggplot(newDF09) +
 al
 
 ## ----diffscor------------------------------------------------------------
-diffscor <- cor(masterData[masterData$year != 2010,]$communitysat, abs(masterData[masterData$year != 2010,]$racediffs))
+diffscor <- cor(masterData[masterData$year != 2010,]$communitysat, abs(1/masterData[masterData$year != 2010,]$racediffs))
 
 ## ----OverallSeniors------------------------------------------------------
 seniorGroup10 <- sotc10 %>% 
@@ -669,11 +689,18 @@ baseplot <- ggplot(mapping = aes(InGroup, Freq, fill = Response, order=Response)
 
 baseplot
 
-## ----seniorPlot, out.width="0.99\\linewidth",fig.width = 10.5, fig.height=12.5, fig.cap="Responses to the question, \`\`How is your community as a place for seniors?\" faceted by community (2009 data). Every community follows the pattern of over-rating by seniors, but some communities have a smaller discrepancy between ratings of seniors and non-seniors."----
-baseplot <- ggplot(mapping = aes(InGroup, Freq, fill = Response, order = Response)) + 
+## ----seniorPlot, out.width="0.99\\linewidth",fig.width = 10.5, fig.height=12.5, fig.cap="Responses to the question, \`\`How is your community as a place for seniors?\" faceted by community (2009 data). Numbers in parentheses are sample sizes. Every community follows the pattern of over-rating by seniors, but some communities have a smaller discrepancy between ratings of seniors and non-seniors."----
+
+totalSeniors09 <- seniorYears %>%
+  ungroup() %>%
+  filter(year==2009) %>%
+  group_by(citystate, InGroup) %>%
+  summarize(totalN = sum(n))
+
+baseplot <- ggplot() + 
   facet_wrap(~citystate, ncol=3) + 
-  geom_bar(data = seniorGroup09$neg, stat = "identity") + 
-  geom_bar(data = seniorGroup09$pos, stat = "identity") + 
+  geom_bar(mapping = aes(InGroup, Freq, fill = Response, order = Response), data = seniorGroup09$neg, stat = "identity") + 
+  geom_bar(mapping = aes(InGroup, Freq, fill = Response, order = Response), data = seniorGroup09$pos, stat = "identity") + 
   scale_fill_manual(
     breaks=c("Very bad", "2", "3", "4", "Very good"), 
     values=colorsA, 
@@ -692,26 +719,32 @@ baseplot <- ggplot(mapping = aes(InGroup, Freq, fill = Response, order = Respons
     legend.title=element_text(size=16), 
     axis.text.y=element_text(size=16), 
     title=element_text(size=16), 
-    axis.text.x=element_text(size=12),
-    strip.text=element_text(size=14))
+    axis.text.x=element_text(size=11),
+    strip.text=element_text(size=14)) +
+  geom_text(data=totalSeniors09, aes(label=paste0("(",totalN, ")"), x=InGroup, y=1.2), size=3, hjust=1) +
+  expand_limits(y=1) 
 
 baseplot
 
-## ----anotherlookseniors, out.width="0.76\\linewidth", fig.cap=paste0("Relationship between positive responses to the question, \`\`How is your community as a place for seniors?\" comparing ratings of non-seniors and seniors. The black line shows y=x, for comparison. Grey lines at x=", round(mean(totPos$Seniors), digits=2), " and y=", round(mean(totPos$Nonseniors), digits=2), " show the mean ratings by each group.")----
+## ----anotherlookseniors, out.width="0.76\\linewidth", fig.cap=paste0("Relationship between positive responses to the question, \`\`How is your community as a place for seniors?\" comparing ratings of non-seniors and seniors. Each community is represented, and the plot uses 2009 data. The darker grey region corresponds to positive meta-knowledge scores. The black line shows y=x, for comparison. Grey lines at x=", round(mean(totPos$Seniors), digits=2), " and y=", round(mean(totPos$Nonseniors), digits=2), " show the mean ratings by each group.")----
 sr <- ggplot(totPos) + 
+  geom_polygon(data=df_poly, aes(x, y), fill="grey", alpha=0.6) +
   geom_vline(aes(xintercept=vert), color="grey") + 
   geom_hline(aes(yintercept=horiz), color="grey") + 
   geom_abline(intercept=0, slope=1) + 
   geom_point(aes(y=Nonseniors, x=Seniors)) + 
   geom_text(
     data = totPos[totPos$citystate %in% c("Wichita, KS", "Gary, IN", "Bradenton, FL"),], 
-    aes(y=Nonseniors, x=Seniors, label = citystate), 
+    aes(y=Nonseniors, x=Seniors, label = paste(citystate, "\nMK =", round(1/seniordiffs))
+        ), 
     vjust=c(-0.4,-0.4,1), 
     hjust=c(1,0,0), 
     size=4
     ) + 
   xlab("Senior rating") + 
-  ylab("Non-senior rating") 
+  ylab("Non-senior rating") +
+  ylim(0.5, 1) +
+  xlim(0.5, 1)
 
 sr
 
@@ -809,10 +842,15 @@ baseplot <- ggplot(mapping = aes(InGroup, Freq, fill = Response, order=Response)
 baseplot 
 
 ## ----kidPlot, out.width="0.99\\linewidth",fig.width = 10.5, fig.height=12.5, fig.cap="Responses to the question, \`\`How is your community as a place for families with young children?\" faceted by community (2009 data). Interestingly, most communities follow the pattern of similar ratings by both groups, but there is a lot of variation between communities in terms of the overall rating."----
-baseplot <- ggplot(mapping = aes(InGroup, Freq, fill = Response, order=Response)) + 
+totalkids09 <- kidGroup09 %>%
+  ungroup() %>%
+  group_by(citystate, InGroup) %>%
+  summarize(totalN = sum(n))
+
+baseplot <- ggplot() + 
   facet_wrap(~citystate, ncol=3) + 
-  geom_bar(data = kidGroups$neg, stat = "identity") + 
-  geom_bar(data = kidGroups$pos, stat = "identity") + 
+  geom_bar(mapping = aes(InGroup, Freq, fill = Response, order=Response), data = kidGroups$neg, stat = "identity") + 
+  geom_bar(mapping = aes(InGroup, Freq, fill = Response, order=Response), data = kidGroups$pos, stat = "identity") + 
   scale_fill_manual(
     breaks=c("Very bad", "2", "3", "4", "Very good"), 
     values=colorsA, 
@@ -831,36 +869,42 @@ baseplot <- ggplot(mapping = aes(InGroup, Freq, fill = Response, order=Response)
     legend.title=element_text(size=16), 
     axis.text.y=element_text(size=16), 
     title=element_text(size=16), 
-    axis.text.x=element_text(size=10))
+    axis.text.x=element_text(size=10)) +
+  geom_text(data=totalkids09, aes(label=paste0("(",totalN, ")"), x=InGroup, y=1.2), size=3, hjust=1) +
+  expand_limits(y=1) 
 
 baseplot 
 
-## ----anotherlookkids, out.width="0.76\\linewidth", fig.cap=paste0("Relationship between positive responses to the question, \`\`How is your community as a place for families with young children?\" comparing ratings of families with kids and those without. The black line shows y=x, for comparison. Grey lines at x=", round(mean(comp09$InGroup), digits=2), " and y=", round(mean(comp09$OutGroup), digits=2), " show the mean ratings by each group.")----
+## ----anotherlookkids, out.width="0.76\\linewidth", fig.cap=paste0("Relationship between positive responses to the question, \`\`How is your community as a place for families with young children?\" comparing ratings of families with kids and those without. Each community is represented, and the plot uses 2009 data. The darker grey region corresponds to positive meta-knowledge scores. The black line shows y=x, for comparison. Grey lines at x=", round(mean(comp09$InGroup), digits=2), " and y=", round(mean(comp09$OutGroup), digits=2), " show the mean ratings by each group.")----
 kd <- ggplot(comp09) + 
+  geom_polygon(data=df_poly, aes(x, y), fill="grey", alpha=0.6) +
+  geom_abline(intercept=0, slope=1) + 
   geom_vline(aes(xintercept=mean(comp09$InGroup)), color="grey") + 
   geom_hline(aes(yintercept=mean(comp09$OutGroup)), color="grey") + 
-  geom_abline(intercept=0, slope=1) + 
   geom_point(aes(y=OutGroup, x=InGroup)) + 
   geom_text(
     data = comp09[comp09$citystate %in% c("Grand Forks, ND", "Gary, IN", "St. Paul, MN"),], 
-    aes(y=OutGroup, x=InGroup, label = citystate), 
+    aes(y=OutGroup, x=InGroup, label = paste(citystate, "\nMK =", round(-1/ratio))), 
     vjust=c(-0.4,-0.4,1), 
     hjust=c(0,1,0), 
     size=4
     ) + 
   xlab("Families with children") + 
-  ylab("Childless households") 
+  ylab("Childless households") +
+  xlim(0.6, 1) +
+  ylim(0.6,1)
 kd
 
 ## ----correlationmatrix, out.width="\\linewidth",  fig.cap="Correlation between variables of interest. In particular, look at the correlations of variables with Community Satisfaction. When reading the plot, recall that `[subgroup] rating` refers to their rating of their community as a place either for the associated minority group or the complement of that group in society, not to satisfaction overall. (2008, 2009, 2010 data, except for race-related questions where 2010 was excluded)."----
 
-masterData$racediffs <- abs(masterData$racediffs)
-masterData$seniordiffs <- abs(masterData$seniordiffs)
+masterData$racediffs <- abs(1/masterData$racediffs)
+masterData$seniordiffs <- abs(1/masterData$seniordiffs)
+masterData$kiddiffs <- abs(1/masterData$kiddiffs)
 
 melted <- select(masterData, -citystate, -year) %>% 
   cor(use="complete.obs") %>% 
   melt()
-varnames <- c("Community satisfaction", "Registered to vote", "Volunteered", "Attended a public meeting", "Voted in a local election", "Worked to make change", "Non-white rating", "White rating", "|MK_R|", "Senior rating", "Non-Senior rating", "|MK_S|", "Families with children rating", "Childless household rating", "MK_C")
+varnames <- c("Community satisfaction", "Registered to vote", "Volunteered", "Attended a public meeting", "Voted in a local election", "Worked to make change", "Non-white rating", "White rating", "|MK about racial minorities|", "Senior rating", "Non-Senior rating", "|MK about seniors|", "Families with children rating", "Childless household rating", "|MK about children|")
   
 cp <- ggplot(data=melted, aes(x=Var1, y=Var2, fill=value)) +
   geom_tile() + 
@@ -870,6 +914,7 @@ cp <- ggplot(data=melted, aes(x=Var1, y=Var2, fill=value)) +
   xlab("") + 
   ylab("") + 
   theme(axis.text.x=element_text(angle=-90, hjust=0)) + 
-  coord_flip()
+  coord_flip() +
+  coord_fixed()
 cp
 
