@@ -658,13 +658,17 @@ minGroups08$neg$Response <- factor(minGroups08$neg$Response, levels=levels(minGr
 
 minGroups09 <- LikertData(positive, negative, neutral, minoritiesYN09)
 minGroups09$neg$Response <- factor(minGroups09$neg$Response, levels=levels(minGroups09$neg$Response)[c(2,3,1)])
+
+totalMin09 <- minoritiesYN09 %>%
+  group_by(citystate, InGroup) %>%
+  summarize(totalN = sum(n))
 @ 
 
-<<allMinorities,out.width="0.99\\linewidth",fig.width = 10.5, fig.height=12.5, fig.cap="Responses to the question, \`\`How is your community as a place for racial and ethnic minorities?\" faceted by community (2009 data)." >>=
-baseplot <- ggplot(mapping = aes(InGroup, Freq, fill = Response, order=Response)) + 
+<<allMinorities,out.width="0.99\\linewidth",fig.width = 10.5, fig.height=12.5, fig.cap="Responses to the question, \`\`How is your community as a place for racial and ethnic minorities?\" faceted by community (2009 data). Numbers in parentheses indicate sample sizes." >>=
+baseplot <- ggplot() + 
   facet_wrap(~citystate, ncol=3) + 
-  geom_bar(data = minGroups09$neg, stat = "identity") + 
-  geom_bar(data = minGroups09$pos, stat = "identity") + 
+  geom_bar(mapping = aes(InGroup, Freq, fill = Response, order=Response), data = minGroups09$neg, stat = "identity") + 
+  geom_bar(mapping = aes(InGroup, Freq, fill = Response, order=Response), data = minGroups09$pos, stat = "identity") + 
   scale_fill_manual(
     values=colorsA, 
     breaks=c("Very bad", "2", "3", "4", "Very good"),
@@ -673,7 +677,7 @@ baseplot <- ggplot(mapping = aes(InGroup, Freq, fill = Response, order=Response)
   coord_flip() +
 #TRUE means minorities, in Aberdeen they are under-rating
   scale_y_continuous(
-    breaks=seq(from=-0.25, to=0.75, by=0.25), 
+    breaks=seq(from=-0.5, to=0.75, by=0.25), 
     labels=percent
     ) + 
   scale_x_discrete(labels=c("White", "Non-white")) + 
@@ -684,8 +688,10 @@ baseplot <- ggplot(mapping = aes(InGroup, Freq, fill = Response, order=Response)
     legend.title=element_text(size=16), 
     axis.text.y=element_text(size=16), 
     title=element_text(size=16), 
-    axis.text.x=element_text(size=14), 
-    strip.text=element_text(size=14))
+    axis.text.x=element_text(size=11), 
+    strip.text=element_text(size=14)) +
+  geom_text(data=totalMin09, aes(label=paste0("(",totalN, ")"), x=InGroup, y=1.1), size=3, hjust=1) +
+  expand_limits(y=1) 
 
 baseplot 
 @
@@ -862,11 +868,18 @@ baseplot <- ggplot(mapping = aes(InGroup, Freq, fill = Response, order=Response)
 baseplot
 @
 
-<<seniorPlot, out.width="0.99\\linewidth",fig.width = 10.5, fig.height=12.5, fig.cap="Responses to the question, \`\`How is your community as a place for seniors?\" faceted by community (2009 data). Every community follows the pattern of over-rating by seniors, but some communities have a smaller discrepancy between ratings of seniors and non-seniors.">>=
-baseplot <- ggplot(mapping = aes(InGroup, Freq, fill = Response, order = Response)) + 
+<<seniorPlot, out.width="0.99\\linewidth",fig.width = 10.5, fig.height=12.5, fig.cap="Responses to the question, \`\`How is your community as a place for seniors?\" faceted by community (2009 data). Numbers in parentheses are sample sizes. Every community follows the pattern of over-rating by seniors, but some communities have a smaller discrepancy between ratings of seniors and non-seniors.">>=
+
+totalSeniors09 <- seniorYears %>%
+  ungroup() %>%
+  filter(year==2009) %>%
+  group_by(citystate, InGroup) %>%
+  summarize(totalN = sum(n))
+
+baseplot <- ggplot() + 
   facet_wrap(~citystate, ncol=3) + 
-  geom_bar(data = seniorGroup09$neg, stat = "identity") + 
-  geom_bar(data = seniorGroup09$pos, stat = "identity") + 
+  geom_bar(mapping = aes(InGroup, Freq, fill = Response, order = Response), data = seniorGroup09$neg, stat = "identity") + 
+  geom_bar(mapping = aes(InGroup, Freq, fill = Response, order = Response), data = seniorGroup09$pos, stat = "identity") + 
   scale_fill_manual(
     breaks=c("Very bad", "2", "3", "4", "Very good"), 
     values=colorsA, 
@@ -886,7 +899,9 @@ baseplot <- ggplot(mapping = aes(InGroup, Freq, fill = Response, order = Respons
     axis.text.y=element_text(size=16), 
     title=element_text(size=16), 
     axis.text.x=element_text(size=12),
-    strip.text=element_text(size=14))
+    strip.text=element_text(size=14)) +
+  geom_text(data=totalSeniors09, aes(label=paste0("(",totalN, ")"), x=InGroup, y=1.1), size=3, hjust=1) +
+  expand_limits(y=1) 
 
 baseplot
 @
@@ -1023,10 +1038,15 @@ baseplot
 @
 
 <<kidPlot, out.width="0.99\\linewidth",fig.width = 10.5, fig.height=12.5, fig.cap="Responses to the question, \`\`How is your community as a place for families with young children?\" faceted by community (2009 data). Interestingly, most communities follow the pattern of similar ratings by both groups, but there is a lot of variation between communities in terms of the overall rating.">>=
-baseplot <- ggplot(mapping = aes(InGroup, Freq, fill = Response, order=Response)) + 
+totalkids09 <- kidGroup09 %>%
+  ungroup() %>%
+  group_by(citystate, InGroup) %>%
+  summarize(totalN = sum(n))
+
+baseplot <- ggplot() + 
   facet_wrap(~citystate, ncol=3) + 
-  geom_bar(data = kidGroups$neg, stat = "identity") + 
-  geom_bar(data = kidGroups$pos, stat = "identity") + 
+  geom_bar(mapping = aes(InGroup, Freq, fill = Response, order=Response), data = kidGroups$neg, stat = "identity") + 
+  geom_bar(mapping = aes(InGroup, Freq, fill = Response, order=Response), data = kidGroups$pos, stat = "identity") + 
   scale_fill_manual(
     breaks=c("Very bad", "2", "3", "4", "Very good"), 
     values=colorsA, 
@@ -1045,7 +1065,9 @@ baseplot <- ggplot(mapping = aes(InGroup, Freq, fill = Response, order=Response)
     legend.title=element_text(size=16), 
     axis.text.y=element_text(size=16), 
     title=element_text(size=16), 
-    axis.text.x=element_text(size=10))
+    axis.text.x=element_text(size=10)) +
+  geom_text(data=totalkids09, aes(label=paste0("(",totalN, ")"), x=InGroup, y=1.2), size=3, hjust=1) +
+  expand_limits(y=1) 
 
 baseplot 
 @
