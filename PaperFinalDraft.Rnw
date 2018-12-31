@@ -57,6 +57,7 @@ require(RColorBrewer)
 require(ggmap)
 require(xtable)
 require(reshape2)
+require(forcats)
 @
 <<readdata>>=
 sotc10 <- read.csv("data/sotc10.csv")
@@ -133,7 +134,13 @@ popData$percent <- popData$percent*100
 popData$citystate <- c(rep(levels(sotc10$citystate),3))
 @
 
-<<surveyrates, fig.align="left", fig.cap="Yearly survey percentages, displayed on a log scale. Notice that some communities are always over-surveyed (for example, Palm Beach, FL) and some always appear under-surveyed (for example, Long Beach, CA). Population data compiled by the Census Bureau for Intercensal population estimates", out.width="0.99\\linewidth",fig.width = 9.5,fig.height=7.5>>=
+<<surveyrates, fig.align="left", fig.cap="Yearly survey percentages, displayed on a log scale. Communityies are ordered by median survey rate. Notice that some communities are always over-surveyed (for example, Palm Beach, FL) and some always appear under-surveyed (for example, Long Beach, CA). Population data compiled by the Census Bureau for Intercensal population estimates", out.width="0.99\\linewidth",fig.width = 9.5,fig.height=7.5>>=
+
+popData <- popData %>%
+  group_by(citystate) %>%
+  mutate(medianpercent = median(percent)) %>%
+  ungroup() %>%
+  mutate(citystate = fct_reorder(citystate, desc(medianpercent)))
 
 p <- ggplot(aes(x=year, y=percent), data=popData) + 
   facet_wrap(~citystate, ncol=5) + 
@@ -227,7 +234,7 @@ print(xtable(x=missingtable,caption="Percent of missing data from surveys. The 2
 \label{communittsatsec}
 Knowing that the question about community satisfaction was the only survey question answered by all respondents, it made sense to see which communities reported the highest levels of community satisfaction. 
 
-To visualize this, a set of stacked distribution graphs were created \citep{RobHei2011}. These stacked distribution graphs are centered around zero and use a diverging color scale to give an overall graphical sense of the amount of positive and negative responses across groups. Figure \ref{fig:communitysatplot} shows the distribution of responses to the question, ``Taking everything into account, how satisfied are you with this community as a place to live?'' and is ordered by the communities with the largest total positive responses in 2008, which highlights the changes in 2009 and 2010. 
+To visualize this, a set of stacked distribution graphs were created \citep{RobHei2011, HeiRob2014}. These stacked distribution graphs are centered around zero and use a diverging color scale to give an overall graphical sense of the amount of positive and negative responses across groups. Figure \ref{fig:communitysatplot} shows the distribution of responses to the question, ``Taking everything into account, how satisfied are you with this community as a place to live?'' and is ordered by the communities with the largest total positive responses in 2008, which highlights the changes in 2009 and 2010. 
 
 <<communitysat>>=
 tmp1 <- tbl_df(sotc08) %>% 
@@ -398,7 +405,7 @@ dfcities10 <- sotc10 %>%
   mutate(Freq = n/sum(n)) %>%
   filter(Response=="Yes") %>%
   merge(select(filter(df10, Response=="Yes"), Freq), by="Question") %>%
-  mutate(diff=Freq.y-Freq.x) %>%
+  mutate(diff=Freq.x-Freq.y) %>%
   select(-Freq.y, -n, Freq=Freq.x) %>%
   arrange(citystate) %>%
   mutate(year="2010")
@@ -453,7 +460,7 @@ md1$year <- as.numeric(md1$year)
 masterData <- left_join(masterData, md1)
 @
 
-<<YN2010plot, out.width="0.99\\linewidth",fig.width = 10, fig.height=18, fig.cap="Difference from overall survey rates (2010 data). The letters A-J represent the activities listed in Figure \\ref{fig:YNall}. A: Registered to vote, B: Voted in a local election, C: Donated money to a local organization, D: Attended a local event, E: Gave money or food to an individual, F: Participated in a church event, G: Performed local volunteer work, H: Worked with other residents to make change, I: Attended a local public meeting, J: Provided free shelter to an individual.">>=
+<<YN2010plot, out.width="0.99\\linewidth",fig.width = 10, fig.height=18, fig.cap="Percentage-point difference from overall survey rates (2010 data). The letters A-J represent the activities listed in Figure \\ref{fig:YNall}. A: Registered to vote, B: Voted in a local election, C: Donated money to a local organization, D: Attended a local event, E: Gave money or food to an individual, F: Participated in a church event, G: Performed local volunteer work, H: Worked with other residents to make change, I: Attended a local public meeting, J: Provided free shelter to an individual.">>=
 baseplot <- ggplot(dfcitiesYes) + 
   aes(Question, diff, fill = col) + 
   facet_wrap(~citystate, ncol=3) + 
@@ -462,7 +469,7 @@ baseplot <- ggplot(dfcitiesYes) +
   guides(fill=FALSE) + 
   scale_y_continuous(
     breaks=seq(from=-.15, to=.15, length.out = 5),
-    labels=c("", "-7.5%", "0","+7.5%",  "")
+    labels=c("", "-7.5", "0","+7.5",  "")
     ) +
   scale_x_discrete(labels=LETTERS[10:1]) + 
   ylab("") + 
@@ -475,11 +482,11 @@ baseplot <- ggplot(dfcitiesYes) +
 baseplot
 @
 
-A followup to this question is whether all communities performed these actions at similar rates, or if there were local variations in behavior. Figure \ref{fig:YN2010plot} shows the difference from the overall rate across all 26 communities and 10 behaviors in 2010. More study is required to determine if the visual differences between communities represent true differences or just random variation, but there are certainly communities that stand out from the rest. 
+A followup to this question is whether all communities performed these actions at similar rates, or if there were local variations in behavior. Figure \ref{fig:YN2010plot} shows the percentage-point difference from the overall rate across all 26 communities and 10 behaviors in 2010. For example, in 2010, approximately \Sexpr{round(trial1[["pos"]][trial1[["pos"]]$Year=="2010" & trial1[["pos"]]$Question=="registered_vote",]$Freq, digits=2)*100}\% of people arcross all communities were registered to vote. In comparison, in Aberdeen, SD, \Sexpr{round(dfcitiesYes[dfcitiesYes$citystate=="Aberdeen, SD" & dfcitiesYes$Question=="registered_vote",]$Freq, digits=2)*100}\% of people reported being registered to vote, so Figure \ref{fig:YN2010plot} shows a percentage-point difference of +\Sexpr{round(dfcitiesYes[dfcitiesYes$citystate=="Aberdeen, SD" & dfcitiesYes$Question=="registered_vote",]$Freq-trial1[["pos"]][trial1[["pos"]]$Year=="2010" & trial1[["pos"]]$Question=="registered_vote",]$Freq, digits=2)*100}. Of course, all the communities rates are included in the calculation of the average, so it makes sense that some communities are above the overall rate and some are below. More study is required to determine if the visual differences between communities represent true differences or just random variation, but there are certainly communities that stand out from the rest. 
 
-For example, people in St. Paul, MN, San Jose, CA, and State College, PA were much more likely than the average to to provide free shelter to a non-relative, while people in Georgia (both Macon and Milledgeville) were less likely to. This provides a connection to Figure \ref{fig:communitysatplot}, because Macon and Milledgeville were the two communities whose community satisfaction scores decreased the most in 2009 and 2010, while San Jose was one of the most satisfied communities over all three years. One hypothesis is that St. Paul, San Jose, and State College are all university towns, where young people (especially college students) may invite friends and friends-of-friends to stay with them for free. Again, more study is required. 
+For example, people in Boulder, CO, Long Beach, CA, and San Jose, CA participated in chuch events at a much lower rate the the overall, while people in Georgia (both Macon and Milledgeville) were more likely to. 
 
-It is also interesting to note the communities that performed above or below national rates on most questions. For example, Biloxi, MS shows that respondents are much less likely to engage in any of the behaviors asked about, with the exception of being registered to vote and performing local volunteer work. On the other hand, Palm Beach, FL shows higher-than-average rates for almost all behavior, except for being registered to vote and giving money or food to an individual. Long Beach, CA shows a similar pattern. However, since this array of plots represents 26 facets of the same plot, it is possible that these visual trends occurred by chance. 
+It is also interesting to note the communities that performed above or below national rates on most questions. For example, Biloxi, MS shows that respondents engage in almost all of the behaviors asked about at higher-than average rates, with the exception of being registered to vote and performing local volunteer work. On the other hand, Palm Beach, FL shows lower-than-average rates for almost all behavior, except for giving money or food to an individual. Long Beach, CA shows a similar pattern. However, since this array of plots represents 26 facets of the same plot, it is highly possible that these visual trends occurred by chance. Humans have a tendency to see patterns in noise, even when no true pattern exists. This tendency is known as apophenia or pareidolia, and can be combatted by the use of visual inference techniques~\citep{BujCoo200}. However, that was outside the scope of this Data Expo entry.  
 
 \section{Meta-Knowledge}
 \label{metasec}
