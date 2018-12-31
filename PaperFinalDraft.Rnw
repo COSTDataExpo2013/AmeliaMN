@@ -3,7 +3,7 @@
 \smartqed% flush right qed marks, e.g. at end of proof
 \usepackage{graphicx}
 \usepackage[round]{natbib}
-
+\usepackage{amsmath}
 
 \begin{document}
 \journalname{Computational Statistics}
@@ -24,17 +24,21 @@
 
 
 
-\begin{abstract} The Knight Foundation collects data to determine what factors impact community satisfaction, local GDP growth, and interest in Knight news publications. For the 2013 Data Expo at the Joint Statistical Meetings, many participants created graphical explorations of these data. This article focuses on the idea of community meta-knowledge, which is essentially majority group empathy or understanding of how minorities experience their community. For example, the survey asks participants to rate their community ``as a place for senior citizens,'' on a 5-point Likert scale. A city where seniors rated their community in the same way as non-seniors is defined as a community with high meta-knowledge about conditions for seniors. Three minority groups were explored: seniors, families with young children, and racial minorities. In most communities, people outside the minority group tended to under-rate their community, compared to those in the minority group. However, there were some exceptions. 
+\begin{abstract} The Knight Foundation collects data to determine what factors impact community satisfaction, local GDP growth, and interest in Knight news publications. For the 2013 Data Expo at the Joint Statistical Meetings, participants created graphical explorations of these data. This article focuses on the idea of community meta-knowledge, which is essentially majority group empathy or understanding of how minorities experience their community. For example, the survey asks participants to rate their community ``as a place for senior citizens,'' on a 5-point Likert scale. A city where seniors rated their community in the same way as non-seniors is defined as a community with high meta-knowledge about conditions for seniors. Three minority groups were explored: seniors, families with young children, and racial minorities. In most communities, people outside the minority group tended to under-rate their community, compared to those in the minority group. However, meta knowledge about racial minorities stood out as an exception. 
 \keywords{2013 Data Exposition, R, ggplot2, Likert scales, meta-knowledge}
 \end{abstract}
 
 \section{Introduction}
 \label{intro}
-Studies have shown that increasing empathy is the best way to improve intergroup relations \citep{SteFin1999}. Therefore, it is of interest to quantify the typical level of empathy in communities across the United States. The Knight Foundation data provides a window to a factor which could be thought of as a proxy for empathy, namely community meta-knowledge. We are defining meta-knowledge as community awareness by those outside a specific subgroup about the conditions for people inside the subgroup. The primary attempt of this article is to answer the question ``Are people outside a specific subgroup aware of the quality of their community for people in that subgroup?" and then, ``do communities with high meta-knowledge (those where people outside the subgroup understood conditions for minorities) have higher community satisfaction rates than those with low meta-knowledge?"
+Studies have shown that increasing empathy is the best way to improve intergroup relations \citep{SteFin1999}. Therefore, it is of interest to quantify the typical level of empathy in communities across the United States. The Knight Foundation data provides a window into something which could be thought of as a proxy for empathy, namely community meta-knowledge. We define meta-knowledge as community awareness by those outside a specific subgroup about the conditions for people inside the subgroup. The primary attempt of this article is to answer the question ``Are people outside a specific subgroup aware of the quality of their community for people in that subgroup?" and then, ``do communities with high meta-knowledge (those where people outside the subgroup understood conditions for minorities) have higher community satisfaction rates than those with low meta-knowledge?"
 
-This article is one of several related to the Knight Foundation community data from the 2013 American Statistical Association Data Expo. For more information on the Expo and the data sets, see \citep{Hof2019}. This article is fully reproducble. The paper was written using \LaTeX\, and R~\citep{R2014}. The R package knitr was used to interweve writing and R code~\citep{Xie2014}. If you inspect the source code, available on Github~\citep{McN2019}, you will find that each of the figures in the paper are generated when the document is compiled (``knit''). Likewise, any statistic mentioned in the text is calculated using R and automatically inserted into the text using knitr.  All graphics were generated with the package ggplot2, an R implementation of The Grammar of Graphics~\citep{Wic2009, Wil2005}. The paper was written in the time period between the development of the R package plyr~\citep{Wic2011} and the R package dplyr, which superceded it~\citep{WicFra2015}. Therefore, it uses functions from both packages. One challenge with reproducibility is that as packages develop, they are not always backwards-compatible. To help combat this issue, the code available on Github includes a packrat library. The packrat package allows a user to snapshot the state of their packages in order to freeze them for future reproducibility~\citep{UshMcP2014}. For example, although the current version of dplyr is 0.7.8, this paper uses version 0.4.1. In order to run the code hosted on Github, you will need to ``hydrate'' the library of packages using packrat. The Github repository contains the underlying data, the LaTeX/knitr file which produces the paper (including R code), a packrat archive of the necessary R packages, and LaTeX style files to create the specific journal style. 
+This article is one of several related to the Knight Foundation community data from the 2013 American Statistical Association Data Expo. For more information on the Expo and the data sets, see \cite{Hof2019}. 
 
-The remainder of this paper is an exploration of the idea of community meta-knowledge. It begins with discussion of the data in Section \ref{data}, then moves to focus on community satisfaction in Section \ref{communittsatsec}, and community engagement through local behaviors in Section \ref{behaviorsec}. Finally, it discusses meta-knowledge in Section \ref{metasec} and wraps up with conclusions in Section \ref{conclusion}.
+This article is fully reproducible. The paper was written using \LaTeX\, and R~\citep{R2014}. The R package knitr was used to interweave writing and R code~\citep{Xie2014}. If you inspect the source code, available on Github~\citep{McN2019}, you will find that each of the figures in the paper are generated when the document is compiled (``knit''). Likewise, any statistic mentioned in the text is calculated using R and automatically inserted into the text using knitr.  All graphics were generated with the package ggplot2, an R implementation of The Grammar of Graphics~\citep{Wic2009, Wil2005}. The paper was written in the time period between the development of the R package plyr~\citep{Wic2011} and the R package dplyr, which superseded it~\citep{WicFra2015}. Therefore, it uses functions from both packages. 
+
+One challenge with reproducibility is that as packages develop, they are not always backwards-compatible. To help combat this issue, the code available on Github includes a packrat library. The packrat package allows a user to snapshot the state of their R packages in order to freeze them for future reproducibility~\citep{UshMcP2014}. For example, although the current version of dplyr is 0.7.8, this paper uses version 0.4.1. In order to run the code hosted on Github, you will need to ``hydrate'' the library of packages using packrat. The Github repository contains the underlying data, the \LaTeX/knitr file which produces the paper (including R code), a packrat archive of the necessary R packages, and \LaTeX\, style files to create the specific journal style. 
+
+The remainder of this paper is an exploration of the idea of community meta-knowledge. It begins with a discussion of the data in Section \ref{data}, then moves to focus on community satisfaction in Section \ref{communittsatsec}, and community engagement through local behaviors in Section \ref{behaviorsec}. Finally, it discusses meta-knowledge in Section \ref{metasec} and wraps up with conclusions in Section \ref{conclusion}.
 
 \section{The Data}
 \label{data}
@@ -44,7 +48,7 @@ The survey is conducted over the phone by Gallup Poll, and can take place in eit
 
 The existing data analysis from Gallup is related to a metric they call ``Community Attachment." It is difficult to pin down what this variable means, but it's a composite metric composed of Community Loyalty and Community Passion. Both of those metrics, in turn, are composed of several variables. Community Loyalty includes how likely a person says they are to stay in that particular area, how much they would recommend it to friends, and their outlook for the community's future \citep{KF2010}. Community Passion is composed of variables on connectedness and community pride. So, Community Attachment is already a model of what Gallup believes is important to strong communities. The Gallup team has discovered that this composite variable is positively correlated with local Gross Domestic Product (GDP) growth \citep{KF2010b}. Because of this relationship, the analysis from Gallup is focused on what other factors correlate with Community Attachment (and therefore, with local GDP growth). 
 
-While the Gallup Poll analysis is interesting, it does raise the question of multicollinearity, as factors that are correlated with Community Attachment may simply be correlated with one of the variables that was used to compose it, and may not actually have an impact on local GDP growth. 
+While the Gallup Poll analysis is interesting, it does raise the question of multicollinearity, as factors that are correlated with Community Attachment may simply be correlated with one of the variables that were used to compose it, and may not actually have an impact on local GDP growth. 
 <<packages, echo=FALSE>>=
 require(knitr)
 @ 
@@ -111,7 +115,8 @@ FeelingsC <- function(dataset){
     summarise(percents= sum(Freq))
   Feelings <- data.frame(Feelings)
   newDF <- data.frame(InGroup=NA, OutGroup=NA, citystate=levels(Feelings$citystate))
-  newDF$ratio <- (Feelings[Feelings$InGroup=="FALSE" | Feelings$InGroup=="No",]$percents) - (Feelings[Feelings$InGroup=="TRUE" | Feelings$InGroup=="Yes",]$percents)
+  # just changed, because subtraction was in the wrong direction...
+  newDF$ratio <- (Feelings[Feelings$InGroup=="TRUE" | Feelings$InGroup=="No",]$percents) - (Feelings[Feelings$InGroup=="FALSE" | Feelings$InGroup=="Yes",]$percents)
   newDF$InGroup <- Feelings[Feelings$InGroup=="TRUE" | Feelings$InGroup=="Yes",]$percents
   newDF$OutGroup <- Feelings[Feelings$InGroup=="FALSE" | Feelings$InGroup=="No",]$percents
   return(newDF)
@@ -202,7 +207,7 @@ resp
 
 \subsection{Missing Data}
 \label{missingdata}
-While the Gallup reports claim the telephone surveys only took 15 minutes, the number of variables collected and the wide range of response scales seems to indicate a much larger time commitment. This raises the question of whether everyone who began the survey completed it. And, as mentioned in Section \ref{maprates}, the 2010 data contained many more observations than previous years. The explanation for this difference is missing data, presumably related to surveys that were not fully completed. 
+While the Gallup reports claim the telephone surveys only took 15 minutes, the number of variables collected and the wide range of response scales seem to indicate a much larger time commitment. This raises the question of whether everyone who began the survey completed it. And, as mentioned in Section \ref{maprates}, the 2010 data contained many more observations than previous years. The explanation for this difference is missing data, presumably related to surveys that were not fully completed. 
 
 <<missingmatch>>=
 matchup1 <- sum(is.na(sotc10$recommend) & is.na(sotc10$college))
@@ -482,11 +487,11 @@ baseplot <- ggplot(dfcitiesYes) +
 baseplot
 @
 
-A followup to this question is whether all communities performed these actions at similar rates, or if there were local variations in behavior. Figure \ref{fig:YN2010plot} shows the percentage-point difference from the overall rate across all 26 communities and 10 behaviors in 2010. For example, in 2010, approximately \Sexpr{round(trial1[["pos"]][trial1[["pos"]]$Year=="2010" & trial1[["pos"]]$Question=="registered_vote",]$Freq, digits=2)*100}\% of people arcross all communities were registered to vote. In comparison, in Aberdeen, SD, \Sexpr{round(dfcitiesYes[dfcitiesYes$citystate=="Aberdeen, SD" & dfcitiesYes$Question=="registered_vote",]$Freq, digits=2)*100}\% of people reported being registered to vote, so Figure \ref{fig:YN2010plot} shows a percentage-point difference of +\Sexpr{round(dfcitiesYes[dfcitiesYes$citystate=="Aberdeen, SD" & dfcitiesYes$Question=="registered_vote",]$Freq-trial1[["pos"]][trial1[["pos"]]$Year=="2010" & trial1[["pos"]]$Question=="registered_vote",]$Freq, digits=2)*100}. Of course, all the communities rates are included in the calculation of the average, so it makes sense that some communities are above the overall rate and some are below. More study is required to determine if the visual differences between communities represent true differences or just random variation, but there are certainly communities that stand out from the rest. 
+A followup to this question is whether all communities performed these actions at similar rates, or if there were local variations in behavior. Figure \ref{fig:YN2010plot} shows the percentage-point difference from the overall rate across all 26 communities and 10 behaviors in 2010. For example, in 2010, approximately \Sexpr{round(trial1[["pos"]][trial1[["pos"]]$Year=="2010" & trial1[["pos"]]$Question=="registered_vote",]$Freq, digits=2)*100}\% of people across all communities were registered to vote. In comparison, in Aberdeen, SD, \Sexpr{round(dfcitiesYes[dfcitiesYes$citystate=="Aberdeen, SD" & dfcitiesYes$Question=="registered_vote",]$Freq, digits=2)*100}\% of people reported being registered to vote, so Figure \ref{fig:YN2010plot} shows a percentage-point difference of +\Sexpr{round(dfcitiesYes[dfcitiesYes$citystate=="Aberdeen, SD" & dfcitiesYes$Question=="registered_vote",]$Freq-trial1[["pos"]][trial1[["pos"]]$Year=="2010" & trial1[["pos"]]$Question=="registered_vote",]$Freq, digits=2)*100}. Of course, all the communities rates are included in the calculation of the average, so it makes sense that some communities are above the overall rate and some are below. More study is required to determine if the visual differences between communities represent true differences or just random variation, but there are certainly communities that stand out from the rest. 
 
-For example, people in Boulder, CO, Long Beach, CA, and San Jose, CA participated in chuch events at a much lower rate the the overall, while people in Georgia (both Macon and Milledgeville) were more likely to. 
+For example, people in Boulder, CO, Long Beach, CA, and San Jose, CA participated in church events at a much lower rate the the overall, while people in Georgia (both Macon and Milledgeville) were more likely to participate in church events. 
 
-It is also interesting to note the communities that performed above or below national rates on most questions. For example, Biloxi, MS shows that respondents engage in almost all of the behaviors asked about at higher-than average rates, with the exception of being registered to vote and performing local volunteer work. On the other hand, Palm Beach, FL shows lower-than-average rates for almost all behavior, except for giving money or food to an individual. Long Beach, CA shows a similar pattern. However, since this array of plots represents 26 facets of the same plot, it is highly possible that these visual trends occurred by chance. Humans have a tendency to see patterns in noise, even when no true pattern exists. This tendency is known as apophenia or pareidolia, and can be combatted by the use of visual inference techniques~\citep{WicCoo2010}. However, that was outside the scope of this Data Expo entry.  
+It is also interesting to note the communities that performed above or below national rates on most questions. For example, Biloxi, MS shows that respondents engage in almost all of the behaviors asked about at higher-than average rates, with the exception of being registered to vote and performing local volunteer work. On the other hand, Palm Beach, FL shows lower-than-average rates for almost all behavior, except for giving money or food to an individual. Long Beach, CA shows a similar pattern. However, since this array of plots represents 26 facets of the same plot, it is highly possible that these visual trends occurred by chance. Humans have a tendency to see patterns in noise, even when no true pattern exists. This tendency is known as apophenia or pareidolia, and can be combated by the use of visual inference techniques~\citep{WicCoo2010}. However, that was outside the scope of this Data Expo entry.  
 
 \section{Meta-Knowledge}
 \label{metasec}
@@ -502,14 +507,16 @@ We define meta-knowledge for a particular dimension (e.g. seniors) as the differ
 
 \begin{eqnarray}
 \label{MK}
-MK = \sum R^{+}_{\mbox{ In subgroup}} - \sum R^{+}_{\mbox{ Out of subgroup}}
+MK = \frac{1}{\sum R^{+}_{\mbox{ In subgroup}} - \sum R^{+}_{\mbox{ Out of subgroup}}}
 \end{eqnarray}
+
+This equation means that communities with similar scores from people inside and outside the subgroup will receive high absolute $MK$ values, while those with very different scores will receive low absolute $MK$ values. A positive $MK$ score means that people outside the subgroup are over-rating the community, while a negative $MK$ score means they are under-rating it. 
 
 We can calculate $MK$ for each subgroup we are interested in, denoting which group we are talking about by a subscript. Here, we will consider the questions ``How is your community as a place for racial and ethnic minorities?'' ($MK_R$), ``How is your community as a place for seniors?'' ($MK_S$), and ``How if your community as a place for families with young children?'' ($MK_C$).
 
-Using this definition, communities where Whites highly over-rate their community as a place for minorities will have a negative $MK_S$ score, while communities where Whites under-rate their community will have a positive $MK_S$ score. Communities where the ratings by both groups are roughly equal have a $MK_S$ score of zero. 
+Using this definition, communities where Whites highly over-rate their community as a place for minorities will have a negative $MK_R$ score, while communities where Whites under-rate their community will have a positive $MK_R$ score. Communities where the ratings by both groups are roughly equal will have a large $MK_R$ score, whether positive or negative. Generally, we are more interested in the magnitude of the score than the sign, but it is sometimes interesting to consider which group is under- or over-rating. 
 
-For a visual explanation of this rating system, see Figure \ref{fig:anotherlookplot}. Points above the $y=x$ line will have a negative $MK$ score, those below the line will have a positive score, and those on the line will be zero.
+For a visual explanation of this rating system, see Figure \ref{fig:anotherlookplot}. Points close to the $y=x$ line have a large $MK$ score, those below the line will have smaller positive score, and those above the line have smaller negative scores.
 
 This definition puts emphasis on communities where out-of-subgroup participants rated their city the same way that in-subgroup participants did, based on the assumption that empathy is important to communities \citep{SteFin1999}. 
 
@@ -700,11 +707,11 @@ We want to study the overall difference between in-group and out-group responses
 
 As in Section \ref{behaviorsec}, we want to see the individual variation between communities. We chose to look at the 2009 data to study community-level variation. The community-level responses are shown in Figure \ref{fig:allMinorities}. There is a lot of variation between the communities for this particular type of meta-knowledge. Some communities saw the White respondents over-scoring their community as a place for minorities, while some were under-scoring. 
 
-For the most part, however, Whites over-rated their communities as a place for racial and ethnic minorities, compared to Non-whites. Grand Forks, ND, was a particularly bad offender-- Whites over-rated it as a place for minorities, and minorities themselves rated it as one of the worst communities in 2009. 
+For the most part, however, Whites over-rated their communities as a place for racial and ethnic minorities, compared to Non-whites. Grand Forks, ND, was a particularly bad offender-- Whites over-rated it as a place for minorities (negative $MK$ score), and minorities themselves rated it as one of the worst communities in 2009. 
 
 There was a lot of additional variation in response distribution. For example, San Jose, CA is highly rated as a place for minorities both by people in- and -outside the subgroup. And it was slightly under-rated by Whites, which is probably a good sign of meta-knowledge and empathy. Going the opposite direction are Grand Forks, ND, Myrtle Beach, SC, and Macon, GA. 
 
-For another view of the relationship between ratings (as seen in Figure \ref{fig:allMinorities}) see Figure \ref{fig:anotherlookplot}, which shows the relationship between total positive responses by Whites versus total positive responses by Non-whites to the question, ``How is your community as a place for racial and ethnic minorities?'' Figure \ref{fig:anotherlookplot} makes it clear that there are communities that are under- and over-rated by Whites, and those that are closer to the 1-1 (or y=x) line. 
+For another view of the relationship between ratings (as seen in Figure \ref{fig:allMinorities}) see Figure \ref{fig:anotherlookplot}, which shows the relationship between total positive responses by Whites ($\sum R^+_{\text{out of subgroup}}$) versus total positive responses by Non-whites ($\sum R^+_{\text{in subgroup}}$) to the question, ``How is your community as a place for racial and ethnic minorities?'' Figure \ref{fig:anotherlookplot} makes it clear that while there are some communities that are under-rated by Whites (positive $MK$ score), the majority of communities are over-rated by Whites as a place for minorities (negative $MK$ score). Very few communities are close to the 1-1 (or y=x) line (large $|MK|$ score). 
 
 <<anotherlook>>=
 newDF09 <- FeelingsC(minGroups09$pos)
@@ -723,7 +730,7 @@ horiz <- mean(newDF09$white)
 vert <- mean(newDF09$nonwhite)
 @
 
-However, even if a community is on the 1-1 line in Figure \ref{fig:anotherlookplot}, it may fall below the mean rating for communities overall. Gary, IN is a good example. It has almost the same overall positive rating from Whites and Non-whites (around \Sexpr{round(newDF09[newDF09$citystate=="Gary, IN",]$nonwhite, digits=2)})\% positive ratings), but falls below the mean ratings of communities overall. So, there is agreement that Gary is a worse place than average for minorities. Of course, looking at Figure \ref{fig:allMinorities}, we can see that using the overall positive rating is obscuring some aspects of the overall distribution. Although the positive end of the scale matches up quite nicely, the distribution of negative responses by non-whites is much heavier tailed. As with all simple measures, focusing just on the total positive percentage loses information. 
+However, even if a community is on the 1-1 line in Figure \ref{fig:anotherlookplot}, it may fall below the mean rating for communities overall. Gary, IN is a good example. It has almost the same overall positive rating from Whites and Non-whites (around \Sexpr{round(newDF09[newDF09$citystate=="Gary, IN",]$nonwhite, digits=2)})\% positive ratings), so it has an $MK$ score of \Sexpr{round(1/newDF09[newDF09$citystate=="Gary, IN",]$racediffs)} but it falls below the mean ratings of communities by both Whites and Non-whites. So, while there is high meta-knowledge in Gary, it is agreement that Gary is a worse place than average for minorities. Of course, looking at Figure \ref{fig:allMinorities}, we can see that using the overall positive rating ($\sum R^+$) to compute $MK$ is obscuring some aspects of the overall distribution. Although the positive end of the scale matches up quite nicely, the distribution of negative responses by non-whites is much heavier tailed. As with all simple measures, focusing just on the total positive percentage loses information. 
 
 <<anotherlookplot, out.width="0.76\\linewidth", fig.cap=paste0("Relationship between positive responses to the question, \`\`How is your community as a place for minorities?\" comparing ratings of Whites and Non-whites. Each community is represented, and the plot uses 2009 data. The darker grey region corresponds to positive meta-knowledge scores. Some communities, like State College, PA, are under-rated by Whites, some are over-rated, like Grand Forks, ND, and some are rated the same by both groups, like Gary, IN. The black line shows y=x, for comparison. Grey lines at x=", round(vert, digits=2), " and y=", round(horiz, digits=2), " show the mean ratings by each group.") >>=
 df_poly <- data.frame(
@@ -739,8 +746,8 @@ al <- ggplot(newDF09) +
   geom_point(aes(y=white, x=nonwhite)) + 
   geom_text(
     data = newDF09[newDF09$citystate %in% c("Duluth, MN", "Gary, IN", "Grand Forks, ND", "State College, PA"),],
-    aes(y=white, x=nonwhite, label = citystate), 
-    vjust=c(-0.6, -0.4, 1.3, -0.6), 
+    aes(y=white, x=nonwhite, label = paste(citystate, "\nMK =", round(1/racediffs))), 
+    vjust=c(-0.4, 1.1, 1.3, -0.4), 
     hjust=0, 
     size=4
     ) + 
@@ -754,12 +761,12 @@ al
 There is clearly some relationship between ratings by Whites and Non-whites, although it is not a perfect $y=x$ relationship. The correlation between ratings is $r= $\Sexpr{round(cor(newDF09$white, newDF09$nonwhite), digits=2)}.
 
 <<diffscor>>=
-diffscor <- cor(masterData[masterData$year != 2010,]$communitysat, abs(masterData[masterData$year != 2010,]$racediffs))
+diffscor <- cor(masterData[masterData$year != 2010,]$communitysat, abs(1/masterData[masterData$year != 2010,]$racediffs))
 @
 
 To explore the effect of $MK_R$ on community satisfaction, we plotted raw $MK_R$ score against community satisfaction (from Section \ref{communittsatsec}) and did not find a trend. Instead, it seemed like high $MK_R$ scores, both positive and negative, were associated with higher community satisfaction. So, we calculated the correlation between the absolute value of meta-knowledge score, $|MK_R|$, and community satisfaction, which is \Sexpr{round(diffscor, digits=2)}. This includes data from both 2008 and 2009 (2010 data was still excluded because of sample size issues). 
 
-The correlation suggests a positive relationship between the variables, but it's not what we would expect. Communities that had the highest absolute difference in scoring of the question ``how is your community as a place for minorities?'' between Whites and Non-whites (and therefore the highest $|MK_R|$ score) had the highest community satisfaction scores. Communities that had low meta-knowledge score (like Gary, IN) have low community satisfaction scores. This seems counter-intuitive, as we would expect communities that had more self awareness to be more satisfied, but that's not what we see in the plot. It is clear that there is more to community satisfaction than just $|MK_R|$. 
+The correlation suggests a weak negative relationship between the variables, which is not what we would expect. Communities that had lowest meta-knowledge scores had the highest community satisfaction scores, on average. Communities that had high meta-knowledge have lower community satisfaction scores. This seems counter-intuitive, as we would expect communities that had more self awareness to be more satisfied, but that's not what we see. It is clear that there is more to community satisfaction than just $|MK_R|$. 
 
 
 \subsection{Meta-knowledge about the community as a place for seniors}
@@ -842,7 +849,7 @@ masterData <- left_join(masterData, comp)
 @
 To continue our exploration of meta-knowledge, we consider meta-knowledge about communities as a place for seniors, or $MK_S$. In order to determine if non-seniors understood how good their community was for seniors, the data was split into two pieces, one of participants aged 62 and older, and the other of participants under 62. For sample sizes of the groups, see Figure \ref{fig:seniorSS}.
 
-The yearly ratings distributions are shown in Figure \ref{fig:seniorOverallPlot}. It appears that non-seniors typically underestimate how good a place is for seniors. People 62 and older rated their community as a better place for seniors than did people under 62, over all three years.  
+The yearly ratings distributions are shown in Figure \ref{fig:seniorOverallPlot}. It appears that non-seniors typically underestimate how good a place is for seniors (positive $MK$ score). People 62 and older rated their community as a better place for seniors than did people under 62, over all three years.  
 
 <<seniorOverallPlot,out.width="0.99\\linewidth",fig.width = 8.5, fig.height=5.5, fig.cap="Responses to the question, \`\`How is your community as a place for seniors?\" Seniors are defined as survey participants aged 62 and older, non-seniors are those under 62. Notice that seniors consistently rated their community more highly than did non-seniors over all three survey years.">>=
 
@@ -904,7 +911,7 @@ baseplot <- ggplot() +
     legend.title=element_text(size=16), 
     axis.text.y=element_text(size=16), 
     title=element_text(size=16), 
-    axis.text.x=element_text(size=12),
+    axis.text.x=element_text(size=11),
     strip.text=element_text(size=14)) +
   geom_text(data=totalSeniors09, aes(label=paste0("(",totalN, ")"), x=InGroup, y=1.2), size=3, hjust=1) +
   expand_limits(y=1) 
@@ -922,7 +929,8 @@ sr <- ggplot(totPos) +
   geom_point(aes(y=Nonseniors, x=Seniors)) + 
   geom_text(
     data = totPos[totPos$citystate %in% c("Wichita, KS", "Gary, IN", "Bradenton, FL"),], 
-    aes(y=Nonseniors, x=Seniors, label = citystate), 
+    aes(y=Nonseniors, x=Seniors, label = paste(citystate, "\nMK =", round(1/seniordiffs))
+        ), 
     vjust=c(-0.4,-0.4,1), 
     hjust=c(1,0,0), 
     size=4
@@ -937,9 +945,9 @@ sr
 
 As in Section \ref{minorities}, we wanted to investigate the local variation in responses. To do this, a faceted plot of responses between the two groups was created. This plot can be seen in Figure \ref{fig:seniorPlot}, and it uses 2009 data. While this plot allows us to see the overall distribution of responses across communities, it makes it hard to compare the two groups (seniors and non-seniors) overall.
 
-To see the relationship between total positive responses by non-seniors versus total positive responses by seniors to the question ``How is your community as a place for seniors?'' see Figure \ref{fig:anotherlookseniors}. Interestingly, every community followed the trend of non-seniors underestimating how good their community was for seniors (or seniors boosting their responses). The only community that came close to being an exception to this rule was Wichita, KS. There is a strong correlation between ratings both inside and outside the group ($r=$\Sexpr{round(cor(totPos$Seniors, totPos$Nonseniors), digits=2)}), which suggests that there is good meta-knowledge about communities as places for seniors, although seniors always over-rate their communities. 
+To see the relationship between total positive responses by non-seniors versus total positive responses by seniors to the question ``How is your community as a place for seniors?'' see Figure \ref{fig:anotherlookseniors}. Interestingly, every community followed the trend of non-seniors underestimating how good their community was for seniors (or seniors boosting their responses). In other words, unlike $MK_R$, all the $MK_S$ scores were positive. The only community that came close to being an exception to this rule was Wichita, KS. There is a strong correlation between ratings both inside and outside the group ($r=$\Sexpr{round(cor(totPos$Seniors, totPos$Nonseniors), digits=2)}), which suggests that there is good meta-knowledge about communities as places for seniors, although seniors always over-rate their communities. 
 
-Then, the question becomes whether the $MK_S$ score is correlated with community satisfaction-- the value turns out to be \Sexpr{round(cor(masterData$communitysat, abs(masterData$seniordiffs)), digits=2)} This shows the relationship we would expect between community satisfaction and meta-knowledge, as communities with higher meta-knowledge also showed higher community satisfaction. 
+Then, the question becomes whether the $MK_S$ score is correlated with community satisfaction-- the value turns out to be \Sexpr{round(cor(masterData$communitysat, abs(1/masterData$seniordiffs)), digits=2)}. This shows the relationship we would expect between community satisfaction and meta-knowledge, as communities with higher meta-knowledge also showed higher community satisfaction. 
 
 
 \subsection{Meta-knowledge about the community as a place for families with young children}
@@ -1090,7 +1098,7 @@ kd <- ggplot(comp09) +
   geom_point(aes(y=OutGroup, x=InGroup)) + 
   geom_text(
     data = comp09[comp09$citystate %in% c("Grand Forks, ND", "Gary, IN", "St. Paul, MN"),], 
-    aes(y=OutGroup, x=InGroup, label = citystate), 
+    aes(y=OutGroup, x=InGroup, label = paste(citystate, "\nMK =", round(-1/ratio))), 
     vjust=c(-0.4,-0.4,1), 
     hjust=c(0,1,0), 
     size=4
@@ -1102,7 +1110,7 @@ kd <- ggplot(comp09) +
 kd
 @
 
-Finally, we can find the correlation between $MK_C$ and community satisfaction, $r= $\Sexpr{round(cor(masterData$communitysat, masterData$kiddiffs), digits=2)}. Again, this shows the direction of relationship we would expect-- larger community satisfaction scores are correlated with lower $MK_C$ scores. 
+Finally, we can find the correlation between $MK_C$ and community satisfaction, $r= $\Sexpr{round(cor(masterData$communitysat, abs(1/masterData$kiddiffs)), digits=2)}. Again, this shows the direction of relationship we would expect-- larger community satisfaction scores are correlated with higher $MK_C$ scores. 
 
 \subsection{Generalizing with meta-knowledge}
 In order to further study the relationship between community satisfaction and meta knowledge, we want to be able to consider all three measures of meta-knowledge, $MK_R$, $MK_S$, and  $MK_C$, over all three years of data, and in conjunction with the measures of community engagement, like being registered to vote. 
@@ -1113,13 +1121,14 @@ Instead of creating hard-to-interpret models, we simply consider more correlatio
 
 <<correlationmatrix, out.width="\\linewidth",  fig.cap="Correlation between variables of interest. In particular, look at the correlations of variables with Community Satisfaction. When reading the plot, recall that `[subgroup] rating` refers to their rating of their community as a place either for the associated minority group or the complement of that group in society, not to satisfaction overall. (2008, 2009, 2010 data, except for race-related questions where 2010 was excluded).">>=
 
-masterData$racediffs <- abs(masterData$racediffs)
-masterData$seniordiffs <- abs(masterData$seniordiffs)
+masterData$racediffs <- abs(1/masterData$racediffs)
+masterData$seniordiffs <- abs(1/masterData$seniordiffs)
+masterData$kiddiffs <- abs(1/masterData$kiddiffs)
 
 melted <- select(masterData, -citystate, -year) %>% 
   cor(use="complete.obs") %>% 
   melt()
-varnames <- c("Community satisfaction", "Registered to vote", "Volunteered", "Attended a public meeting", "Voted in a local election", "Worked to make change", "Non-white rating", "White rating", "|MK_R|", "Senior rating", "Non-Senior rating", "|MK_S|", "Families with children rating", "Childless household rating", "MK_C")
+varnames <- c("Community satisfaction", "Registered to vote", "Volunteered", "Attended a public meeting", "Voted in a local election", "Worked to make change", "Non-white rating", "White rating", "|MK about racial minorities|", "Senior rating", "Non-Senior rating", "|MK about seniors|", "Families with children rating", "Childless household rating", "|MK about children|")
   
 cp <- ggplot(data=melted, aes(x=Var1, y=Var2, fill=value)) +
   geom_tile() + 
@@ -1134,7 +1143,7 @@ cp <- ggplot(data=melted, aes(x=Var1, y=Var2, fill=value)) +
 cp
 @
 
-There are many interesting insights which can be gleaned from this plot. The first is that there is typically a correlation between $MK$ score, and the scoring of the minority group that the score refers to. For example, there is a strong negative correlation between scoring of the community by Non-seniors and the $|MK_S|$ score. That is, communities where non-Seniors rated it as a good place for seniors, the difference between their ratings and seniors' ratings was smaller. 
+There are many interesting insights which can be gleaned from this plot. The first is that almost all the correlations are positive, with the exception of correlations related to race, both ratings by Whites and Non-whites as well as meta-knowledge about race. 
 
 There are also relationships between community engagement behaviors (for example, being registered to vote and voting in a local election) and between those engagement behaviors and meta-knowledge components (for example, ratings of the community as a place for families with young children and volunteering). 
 
@@ -1142,9 +1151,9 @@ These correlations suggest avenues for further study.
 
 \section{Conclusions and Further Work}
 \label{conclusion}
-Through this exploration of the Knight Foundation's Soul of the Community data, we have been able to examine variability between communities and theorize about what might affect those variations. In Section \ref{communittsatsec} we saw which communities reported the highest levels of community satisfaction, namely State College, PA and Boulder, CO. In Section \ref{behaviorsec}, we explored the common behaviors that survey participants engaged in, including registering to vote and voting in local elections. We noticed that college towns tend to have higher than typical rates of providing shelter to a non-relative (the couchsurfing effect?).
+Through this exploration of the Knight Foundation's Soul of the Community data, we have been able to examine variability between communities and theorize about what might affect those variations. In Section \ref{communittsatsec} we saw which communities reported the highest levels of community satisfaction, namely State College, PA and Boulder, CO. In Section \ref{behaviorsec}, we explored the common behaviors that survey participants engaged in, including registering to vote and voting in local elections. 
 
-Then, in Section \ref{metasec} we began to explore community meta-knowledge, or how aware survey participants are about their community as a place for minority groups. We explored meta-knowledge about how good a community is for racial and ethnic minorities, finding that there is a lot of variation between communities in whether minorities under- or over-rate their communities as a place for minorities, as compared to White respondents. There was some correlation between scores given by respondents in- and out-side the subgroup of racial and ethnic minorities, but not as strong as with the other facets of meta-knowledge. 
+Then, in Section \ref{metasec} we began to explore community meta-knowledge, or how aware survey participants are about their community as a place for minority groups. We explored meta-knowledge about how good a community is for racial and ethnic minorities, finding that there is a lot of variation between communities in whether Whites under- or over-rate their communities as a place for minorities, as compared to Non-white respondents. Communities tended to have the worst meta-knowledge about their community as a place for racial and ethnic minorities.  
 
 We noticed that non-seniors almost always under-rate how good their community is for seniors, but that there is a strong correlation between ratings by seniors and non-seniors, so the under-rating of the senior subgroup is simply a shift of an almost $y=x$ relationship. 
 
