@@ -704,9 +704,7 @@ For the most part, however, Whites over-rated their communities as a place for r
 
 There was a lot of additional variation in response distribution. For example, San Jose, CA is highly rated as a place for minorities both by people in- and -outside the subgroup. And it was slightly under-rated by Whites, which is probably a good sign of meta-knowledge and empathy. Going the opposite direction are Grand Forks, ND, Myrtle Beach, SC, and Macon, GA. 
 
-For another view of the relationship between ratings (as seen in Figure \ref{fig:allMinorities}) see Figure \ref{fig:anotherlookplot}, which shows the relationship between  total positive responses by Whites versus total positive responses by Non-whites to the question, ``How is your community as a place for racial and ethnic minorities?'' Figure \ref{fig:anotherlookplot} makes it clear that there are communities that are under- and over-rated by Whites, and those that are closer to the 1-1 (or y=x) line. 
-
-However, even if a community is on the 1-1 line, it may fall below the mean rating for communities overall. Gary, IN is a good example. While it is rated almost exactly the same by Whites and Non-whites, those ratings fall substantially below the mean ratings of communities overall. So, there is agreement that Gary is not a good place for minorities. 
+For another view of the relationship between ratings (as seen in Figure \ref{fig:allMinorities}) see Figure \ref{fig:anotherlookplot}, which shows the relationship between total positive responses by Whites versus total positive responses by Non-whites to the question, ``How is your community as a place for racial and ethnic minorities?'' Figure \ref{fig:anotherlookplot} makes it clear that there are communities that are under- and over-rated by Whites, and those that are closer to the 1-1 (or y=x) line. 
 
 <<anotherlook>>=
 newDF09 <- FeelingsC(minGroups09$pos)
@@ -725,8 +723,16 @@ horiz <- mean(newDF09$white)
 vert <- mean(newDF09$nonwhite)
 @
 
-<<anotherlookplot, out.width="0.76\\linewidth", fig.cap=paste0("Relationship between positive responses to the question, \`\`How is your community as a place for minorities?\" comparing ratings of Whites and Non-whites. Each community is represented, and the plot uses 2009 data. Some communities, like State College, PA, are under-rated by Whites, some are over-rated, like Grand Forks, ND, and some are rated the same by both groups, like Gary, IN. The black line shows y=x, for comparison. Grey lines at x=", round(vert, digits=2), " and y=", round(horiz, digits=2), " show the mean ratings by each group.") >>=
+However, even if a community is on the 1-1 line in Figure \ref{fig:anotherlookplot}, it may fall below the mean rating for communities overall. Gary, IN is a good example. It has almost the same overall positive rating from Whites and Non-whites (around \Sexpr{round(newDF09[newDF09$citystate=="Gary, IN",]$nonwhite, digits=2)})\% positive ratings), but falls below the mean ratings of communities overall. So, there is agreement that Gary is a worse place than average for minorities. Of course, looking at Figure \ref{fig:allMinorities}, we can see that using the overall positive rating is obscuring some aspects of the overall distribution. Although the positive end of the scale matches up quite nicely, the distribution of negative responses by non-whites is much heavier tailed. As with all simple measures, focusing just on the total positive percentage loses information. 
+
+<<anotherlookplot, out.width="0.76\\linewidth", fig.cap=paste0("Relationship between positive responses to the question, \`\`How is your community as a place for minorities?\" comparing ratings of Whites and Non-whites. Each community is represented, and the plot uses 2009 data. The darker grey region corresponds to positive meta-knowledge scores. Some communities, like State College, PA, are under-rated by Whites, some are over-rated, like Grand Forks, ND, and some are rated the same by both groups, like Gary, IN. The black line shows y=x, for comparison. Grey lines at x=", round(vert, digits=2), " and y=", round(horiz, digits=2), " show the mean ratings by each group.") >>=
+df_poly <- data.frame(
+    x=c(-Inf, Inf, Inf),
+    y=c(-Inf, Inf, -Inf)
+)
+
 al <- ggplot(newDF09) + 
+  geom_polygon(data=df_poly, aes(x, y), fill="grey", alpha=0.6) +
   geom_vline(aes(xintercept=vert), color="grey") + 
   geom_hline(aes(yintercept=horiz), color="grey") + 
   geom_abline(intercept=0, slope=1) + 
@@ -900,15 +906,16 @@ baseplot <- ggplot() +
     title=element_text(size=16), 
     axis.text.x=element_text(size=12),
     strip.text=element_text(size=14)) +
-  geom_text(data=totalSeniors09, aes(label=paste0("(",totalN, ")"), x=InGroup, y=1.1), size=3, hjust=1) +
+  geom_text(data=totalSeniors09, aes(label=paste0("(",totalN, ")"), x=InGroup, y=1.2), size=3, hjust=1) +
   expand_limits(y=1) 
 
 baseplot
 @
 
 
-<<anotherlookseniors, out.width="0.76\\linewidth", fig.cap=paste0("Relationship between positive responses to the question, \`\`How is your community as a place for seniors?\" comparing ratings of non-seniors and seniors. The black line shows y=x, for comparison. Grey lines at x=", round(mean(totPos$Seniors), digits=2), " and y=", round(mean(totPos$Nonseniors), digits=2), " show the mean ratings by each group.") >>=
+<<anotherlookseniors, out.width="0.76\\linewidth", fig.cap=paste0("Relationship between positive responses to the question, \`\`How is your community as a place for seniors?\" comparing ratings of non-seniors and seniors. Each community is represented, and the plot uses 2009 data. The darker grey region corresponds to positive meta-knowledge scores. The black line shows y=x, for comparison. Grey lines at x=", round(mean(totPos$Seniors), digits=2), " and y=", round(mean(totPos$Nonseniors), digits=2), " show the mean ratings by each group.") >>=
 sr <- ggplot(totPos) + 
+  geom_polygon(data=df_poly, aes(x, y), fill="grey", alpha=0.6) +
   geom_vline(aes(xintercept=vert), color="grey") + 
   geom_hline(aes(yintercept=horiz), color="grey") + 
   geom_abline(intercept=0, slope=1) + 
@@ -921,7 +928,9 @@ sr <- ggplot(totPos) +
     size=4
     ) + 
   xlab("Senior rating") + 
-  ylab("Non-senior rating") 
+  ylab("Non-senior rating") +
+  ylim(0.5, 1) +
+  xlim(0.5, 1)
 
 sr
 @
@@ -1072,11 +1081,12 @@ baseplot <- ggplot() +
 baseplot 
 @
 
-<<anotherlookkids, out.width="0.76\\linewidth", fig.cap=paste0("Relationship between positive responses to the question, \`\`How is your community as a place for families with young children?\" comparing ratings of families with kids and those without. The black line shows y=x, for comparison. Grey lines at x=", round(mean(comp09$InGroup), digits=2), " and y=", round(mean(comp09$OutGroup), digits=2), " show the mean ratings by each group.") >>=
+<<anotherlookkids, out.width="0.76\\linewidth", fig.cap=paste0("Relationship between positive responses to the question, \`\`How is your community as a place for families with young children?\" comparing ratings of families with kids and those without. Each community is represented, and the plot uses 2009 data. The darker grey region corresponds to positive meta-knowledge scores. The black line shows y=x, for comparison. Grey lines at x=", round(mean(comp09$InGroup), digits=2), " and y=", round(mean(comp09$OutGroup), digits=2), " show the mean ratings by each group.") >>=
 kd <- ggplot(comp09) + 
+  geom_polygon(data=df_poly, aes(x, y), fill="grey", alpha=0.6) +
+  geom_abline(intercept=0, slope=1) + 
   geom_vline(aes(xintercept=mean(comp09$InGroup)), color="grey") + 
   geom_hline(aes(yintercept=mean(comp09$OutGroup)), color="grey") + 
-  geom_abline(intercept=0, slope=1) + 
   geom_point(aes(y=OutGroup, x=InGroup)) + 
   geom_text(
     data = comp09[comp09$citystate %in% c("Grand Forks, ND", "Gary, IN", "St. Paul, MN"),], 
@@ -1086,7 +1096,9 @@ kd <- ggplot(comp09) +
     size=4
     ) + 
   xlab("Families with children") + 
-  ylab("Childless households") 
+  ylab("Childless households") +
+  xlim(0.6, 1) +
+  ylim(0.6,1)
 kd
 @
 
