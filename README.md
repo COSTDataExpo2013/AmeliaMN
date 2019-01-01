@@ -15,3 +15,5 @@ Please note, while this entire repository is reproducible, the code was initiall
 - ``install.packages("packrat")``
 - hydrate the packrat repository by running ``packrat::restore()``
 - knit the ``Rnw`` file
+
+As an alternative, all the packages are installed and currently working in this [RStudio Cloud workspace](https://rstudio.cloud/spaces/8033/join?access_code=MZnprlQjg0S4z0%2BIhAex4MsO7aoTPm%2F2v1NjBmKM), where anyone should be able to view the project. 
