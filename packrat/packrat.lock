@@ -1,6 +1,6 @@
 PackratFormat: 1.4
 PackratVersion: 0.4.1.1
-RVersion: 3.1.2
+RVersion: 3.1.3
 Repos: CRAN=http://cran.rstudio.com
 
 Package: assertthat
@@ -13,6 +13,12 @@ Source: CRAN
 Version: 1.55.0-3
 Hash: 1c7274ffc895d2c8f23ae98d83a912ed
 
+Package: cli
+Source: CRAN
+Version: 1.0.1
+Hash: 19eed789acd3d909c092a4263ed8529e
+Requires: assertthat, crayon
+
 Package: colorspace
 Source: CRAN
 Version: 1.2-4
@@ -22,6 +28,11 @@ Package: corrplot
 Source: CRAN
 Version: 0.73
 Hash: c844da5abc88620ce8c79d035ca8bf22
+
+Package: crayon
+Source: CRAN
+Version: 1.3.4
+Hash: cf3f1e0916a2525cb1f17bdbc7b29681
 
 Package: DBI
 Source: CRAN
@@ -41,7 +52,7 @@ Hash: e4bf0e79b15a352510aff0de905d31e2
 Package: dplyr
 Source: CRAN
 Version: 0.4.1
-Hash: f51467a80c0032a7e043e7c8473cab05
+Hash: a1b687b41037f4977dcf25387f0c1602
 Requires: assertthat, BH, DBI, lazyeval, magrittr, R6, Rcpp
 
 Package: evaluate
@@ -49,6 +60,17 @@ Source: CRAN
 Version: 0.5.5
 Hash: 20881970e590ee68de97a468694db7b0
 Requires: stringr
+
+Package: fansi
+Source: CRAN
+Version: 0.4.0
+Hash: 4c66e0c080f5a6d4f702659c64bbaa3c
+
+Package: forcats
+Source: CRAN
+Version: 0.3.0
+Hash: c9ea10840f5ae7d12dd68cf42f87006c
+Requires: magrittr, rlang, tibble
 
 Package: formatR
 Source: CRAN
@@ -115,6 +137,17 @@ Source: CRAN
 Version: 1.0.1
 Hash: 576e5bf21e3801499cebc27af6ad1627
 
+Package: mapproj
+Source: CRAN
+Version: 1.2-2
+Hash: 26b74cac98f12af52703765791824ea2
+Requires: maps
+
+Package: maps
+Source: CRAN
+Version: 2.3-7
+Hash: 4c87e5e328a6125cbe661dff2189c864
+
 Package: markdown
 Source: CRAN
 Version: 0.7.4
@@ -142,10 +175,16 @@ Source: CRAN
 Version: 0.4.1-1
 Hash: 5716097644904b9c1b4be2692de16005
 
+Package: pillar
+Source: CRAN
+Version: 1.3.1
+Hash: eb8a30f51cfaa1ab1c339903adbd8ac9
+Requires: cli, crayon, fansi, rlang, utf8
+
 Package: plyr
 Source: CRAN
 Version: 1.8.1
-Hash: be21bad411e628f810a92212e17b5be7
+Hash: 6a287219196e18bc6261dc11b41b1ca0
 Requires: Rcpp
 
 Package: png
@@ -168,10 +207,15 @@ Source: CRAN
 Version: 1.0-5
 Hash: 6a849b729bec970204ca88b96906adbc
 
+Package: Rcpp
+Source: CRAN
+Version: 0.11.3
+Hash: d9cc0a13885961b2d004cf73b0fb68dd
+
 Package: reshape2
 Source: CRAN
 Version: 1.4
-Hash: b210925e978fd52ad5eb0822a353e7ce
+Hash: e50809918ebb73dff47de17d36d12975
 Requires: plyr, Rcpp, stringr
 
 Package: RgoogleMaps
@@ -190,6 +234,11 @@ Source: CRAN
 Version: 1.3-0
 Hash: 8b1341dfd547c90ed4b3365d5aa46a7b
 
+Package: rlang
+Source: CRAN
+Version: 0.3.0.1
+Hash: ce51d9f2bab10bf7a78e5bc9a34f4e4a
+
 Package: scales
 Source: CRAN
 Version: 0.2.4
@@ -206,29 +255,24 @@ Source: CRAN
 Version: 0.6.2
 Hash: cdde0cfa0f52cffeaca23a11a3899779
 
+Package: tibble
+Source: CRAN
+Version: 1.4.2
+Hash: ac4ae0cf85fc7035be30bfa0d0cec990
+Requires: cli, crayon, pillar, rlang
+
 Package: tidyr
 Source: CRAN
 Version: 0.2.0
 Hash: 3b379415e9e88d4f559b380819893304
 Requires: dplyr, lazyeval, reshape2, stringi
 
+Package: utf8
+Source: CRAN
+Version: 1.1.4
+Hash: cd014950475ba08554c4e6782f723b75
+
 Package: xtable
 Source: CRAN
 Version: 1.7-3
 Hash: af110253b140f3f7199c0cac37536a2f
-
-Package: mapproj
-Source: CRAN
-Version: 1.2-2
-Hash: 26b74cac98f12af52703765791824ea2
-Requires: maps
-
-Package: maps
-Source: CRAN
-Version: 2.3-7
-Hash: 4c87e5e328a6125cbe661dff2189c864
-
-Package: Rcpp
-Source: CRAN
-Version: 0.11.3
-Hash: ef2b1a5e45d1461bd720e4ebbe48e601
