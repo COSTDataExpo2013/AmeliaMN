@@ -1,5 +1,9 @@
 # Supplemental material for the paper "Community engagement and subgroup meta-knowledge: Some factors in the soul of a community"
 
+The full reference is: McNamara, A. (2019). “Community engagement and subgroup meta-knowledge: some factors in the soul of a community”, Computational Statistics 34(4):1511–1535. [https://doi.org/10.1007/s00180-019-00879-x](https://doi.org/10.1007/s00180-019-00879-x).
+
+The final publication is available at the Springer web site via [https://doi.org/10.1007/s00180-019-00879-x](https://doi.org/10.1007/s00180-019-00879-x). © Springer-Verlag GmbH Germany, part of Springer Nature, 2019.
+
 This repository contains supplementary material for the paper "Community engagement and subgroup meta-knowledge: Some factors in the soul of a community" to enable the reader to reproduce the analysis.
 
 - **PaperFinalDraft.Rnw** is the LaTeX/knitr file that produces the paper, including all R code for analysis, in knitr chunks.
